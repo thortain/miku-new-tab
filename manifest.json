@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Miku New Tab",
+  "version": "1.0.0",
+  "description": "Hatsune Miku themed new tab page with widgets",
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": [],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "miku-newtab@lucrecia",
+      "strict_min_version": "109.0"
+    }
+  }
+}

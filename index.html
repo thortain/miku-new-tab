@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miku New Tab</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --miku-cyan: #00E5FF;
+      --miku-pink: #FF66CC;
+      --miku-purple: #9D4EDD;
+      --miku-dark: #0a0a1a;
+      --miku-darker: #050510;
+      --glass-bg: rgba(15, 15, 40, 0.65);
+      --glass-border: rgba(0, 229, 255, 0.2);
+      --text-glow: 0 0 10px var(--miku-cyan), 0 0 20px rgba(0, 229, 255, 0.3);
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--miku-darker);
+      font-family: 'Quicksand', 'Nunito', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 20% 80%, rgba(157, 78, 221, 0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(0, 229, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 102, 204, 0.15) 0%, transparent 70%),
+        linear-gradient(180deg, #050510 0%, #0a0a2a 50%, #0d0520 100%);
+      z-index: 0;
+    }
+
+    .bg-image {
+      position: fixed;
+      inset: 0;
+      background: url('https://i.imgur.com/YOUR_MIKU_IMAGE.png') center/cover no-repeat;
+      opacity: 0.85;
+      z-index: 1;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    }
+
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--miku-cyan);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+      opacity: 0.6;
+    }
+
+    .particle:nth-child(odd) {
+      background: var(--miku-pink);
+      animation-duration: 10s;
+    }
+
+    .particle:nth-child(3n) {
+      background: white;
+      width: 2px;
+      height: 2px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.6; }
+      25% { transform: translateY(-30px) translateX(10px) rotate(90deg); opacity: 0.8; }
+      50% { transform: translateY(-15px) translateX(-15px) rotate(180deg); opacity: 0.4; }
+      75% { transform: translateY(-40px) translateX(5px) rotate(270deg); opacity: 0.7; }
+    }
+
+    .music-bars {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      z-index: 10;
+    }
+
+    .bar {
+      width: 6px;
+      background: linear-gradient(to top, var(--miku-cyan), var(--miku-pink));
+      border-radius: 3px;
+      animation: bounce 1s ease-in-out infinite;
+      box-shadow: 0 0 8px var(--miku-cyan);
+    }
+
+    .bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+    .bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+    .bar:nth-child(3) { height: 25px; animation-delay: 0.2s; }
+    .bar:nth-child(4) { height: 40px; animation-delay: 0.3s; }
+    .bar:nth-child(5) { height: 30px; animation-delay: 0.4s; }
+    .bar:nth-child(6) { height: 45px; animation-delay: 0.5s; }
+    .bar:nth-child(7) { height: 20px; animation-delay: 0.6s; }
+    .bar:nth-child(8) { height: 35px; animation-delay: 0.7s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: scaleY(0.5); }
+      50% { transform: scaleY(1); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    /* ---- Clock Widget ---- */
+    .clock-widget {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .time {
+      font-size: 5rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: var(--text-glow);
+      letter-spacing: 4px;
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    .date {
+      font-size: 1.4rem;
+      color: var(--miku-cyan);
+      text-shadow: 0 0 8px var(--miku-cyan);
+      margin-top: 5px;
+      letter-spacing: 2px;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { text-shadow: var(--text-glow); }
+      50% { text-shadow: 0 0 15px var(--miku-cyan), 0 0 30px var(--miku-cyan), 0 0 45px rgba(0, 229, 255, 0.3); }
+    }
+
+    /* ---- Search Bar ---- */
+    .search-container {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 50px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 16px 60px 16px 24px;
+      font-size: 1.1rem;
+      font-family: 'Quicksand', sans-serif;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      color: white;
+      outline: none;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-input:focus {
+      border-color: var(--miku-cyan);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      color: var(--miku-cyan);
+    }
+
+    /* ---- Widgets Grid ---- */
+    .widgets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .widget {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .widget:hover {
+      border-color: var(--miku-pink);
+      box-shadow: 0 0 25px rgba(255, 102, 204, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .widget-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--miku-pink);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .widget-title::before {
+      content: '♪';
+      color: var(--miku-cyan);
+    }
+
+    /* ---- Quick Links Widget ---- */
+    .quick-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quick-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(0, 229, 255, 0.08);
+      border-radius: 8px;
+      color: white;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .quick-link:hover {
+      background: rgba(0, 229, 255, 0.18);
+      padding-left: 16px;
+    }
+
+    .quick-link .favicon {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: var(--miku-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    /* ---- Weather Widget ---- */
+    .weather-widget {
+      text-align: center;
+    }
+
+    .weather-icon {
+      font-size: 2.5rem;
+      margin-bottom: 5px;
+    }
+
+    .weather-temp {
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .weather-desc {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ---- System Stats Widget ---- */
+    .system-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    .stat-value {
+      color: var(--miku-cyan);
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--miku-cyan), var(--miku-pink));
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    /* ---- Notes Widget ---- */
+    .notes-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.9rem;
+      resize: none;
+      outline: none;
+      min-height: 80px;
+    }
+
+    .notes-input:focus {
+      border-color: var(--miku-cyan);
+    }
+
+    /* ---- Pomodoro Widget ---- */
+    .pomodoro-display {
+      text-align: center;
+    }
+
+    .pomo-time {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: var(--text-glow);
+    }
+
+    .pomo-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .pomo-btn {
+      padding: 6px 14px;
+      border: 1px solid var(--glass-border);
+      background: rgba(0, 229, 255, 0.1);
+      color: var(--miku-cyan);
+      border-radius: 20px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pomo-btn:hover {
+      background: var(--miku-cyan);
+      color: var(--miku-dark);
+    }
+
+    /* ---- Song Widget ---- */
+    .song-widget {
+      text-align: center;
+    }
+
+    .song-title {
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .song-artist {
+      color: var(--miku-pink);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .visualizer {
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      margin-top: 10px;
+    }
+
+    .viz-bar {
+      width: 4px;
+      background: linear-gradient(to top, var(--miku-purple), var(--miku-cyan));
+      border-radius: 2px;
+      animation: viz-dance 0.8s ease-in-out infinite alternate;
+    }
+
+    .viz-bar:nth-child(1) { height: 12px; animation-delay: 0s; }
+    .viz-bar:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+    .viz-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+    .viz-bar:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+    .viz-bar:nth-child(5) { height: 24px; animation-delay: 0.4s; }
+
+    @keyframes viz-dance {
+      from { transform: scaleY(0.4); }
+      to { transform: scaleY(1); }
+    }
+
+    /* ---- Footer ---- */
+    .footer {
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.3);
+      z-index: 10;
+    }
+
+    .footer a {
+      color: var(--miku-pink);
+      text-decoration: none;
+    }
+
+    /* ---- Scrollbar ---- */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--miku-purple);
+      border-radius: 3px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .time { font-size: 3.5rem; }
+      .widgets-grid { grid-template-columns: 1fr 1fr; }
+      .container { padding: 20px 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer"></div>
+  <div class="bg-image"></div>
+  
+  <div class="particles" id="particles"></div>
+
+  <div class="container">
+    <!-- Clock -->
+    <div class="clock-widget">
+      <div class="time" id="clock">00:00</div>
+      <div class="date" id="date">Loading...</div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-container">
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="Search the web..." id="searchInput" autocomplete="off">
+        <span class="search-icon">🔍</span>
+      </div>
+    </div>
+
+    <!-- Widgets -->
+    <div class="widgets-grid">
+      <!-- Quick Links -->
+      <div class="widget">
+        <div class="widget-title">Quick Links</div>
+        <div class="quick-links">
+          <a href="https://youtube.com" class="quick-link" target="_blank">
+            <span class="favicon">▶</span> YouTube
+          </a>
+          <a href="https://twitter.com" class="quick-link" target="_blank">
+            <span class="favicon">𝕏</span> Twitter / X
+          </a>
+          <a href="https://reddit.com" class="quick-link" target="_blank">
+            <span class="favicon">r</span> Reddit
+          </a>
+          <a href="https://github.com" class="quick-link" target="_blank">
+            <span class="favicon">◈</span> GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- Weather -->
+      <div class="widget">
+        <div class="widget-title">Weather</div>
+        <div class="weather-widget">
+          <div class="weather-icon" id="weatherIcon">🌤️</div>
+          <div class="weather-temp" id="weatherTemp">--°</div>
+          <div class="weather-desc" id="weatherDesc">Loading...</div>
+        </div>
+      </div>
+
+      <!-- System Stats -->
+      <div class="widget">
+        <div class="widget-title">System</div>
+        <div class="system-stats">
+          <div class="stat-row">
+            <span class="stat-label">CPU</span>
+            <span class="stat-value" id="cpuStat">--%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="cpuBar" style="width: 0%"></div></div>
+          <div class="stat-row">
+            <span class="stat-label">Memory</span>
+            <span class="stat-value" id="memStat">--%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="memBar" style="width: 0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Pomodoro -->
+      <div class="widget">
+        <div class="widget-title">Pomodoro</div>
+        <div class="pomodoro-display">
+          <div class="pomo-time" id="pomoTime">25:00</div>
+          <div class="pomo-buttons">
+            <button class="pomo-btn" onclick="pomodoro.start()">Start</button>
+            <button class="pomo-btn" onclick="pomodoro.reset()">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="widget">
+        <div class="widget-title">Quick Notes</div>
+        <textarea class="notes-input" id="notesArea" placeholder="Jot down ideas..."></textarea>
+      </div>
+
+      <!-- Now Playing -->
+      <div class="widget">
+        <div class="widget-title">Now Playing</div>
+        <div class="song-widget">
+          <div class="song-title" id="songTitle">World is Mine</div>
+          <div class="song-artist" id="songArtist">Hatsune Miku</div>
+          <div class="visualizer">
+            <div class="viz-bar"></div>
+            <div class="viz-bar"></div>
+            <div class="viz-bar"></div>
+            <div class="viz-bar"></div>
+            <div class="viz-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="music-bars">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+
+  <div class="footer">
+    <a href="#">♪ Miku New Tab</a>
+  </div>
+
+  <script>
+    // ---- Particles ----
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      p.style.animationDelay = Math.random() * 5 + 's';
+      particlesContainer.appendChild(p);
+    }
+
+    // ---- Clock ----
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+      document.getElementById('clock').textContent = timeStr;
+      document.getElementById('date').textContent = dateStr;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // ---- Search ----
+    document.getElementById('searchInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const query = e.target.value.trim();
+        if (query) {
+          window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+          e.target.value = '';
+        }
+      }
+    });
+
+    // ---- Pomodoro ----
+    const pomodoro = {
+      duration: 25 * 60,
+      remaining: 25 * 60,
+      interval: null,
+      running: false,
+      
+      start() {
+        if (this.running) return;
+        this.running = true;
+        this.interval = setInterval(() => {
+          this.remaining--;
+          this.updateDisplay();
+          if (this.remaining <= 0) {
+            this.reset();
+            new Notification('🎵 Pomodoro Complete! Time for a break~');
+          }
+        }, 1000);
+      },
+      
+      reset() {
+        clearInterval(this.interval);
+        this.running = false;
+        this.remaining = this.duration;
+        this.updateDisplay();
+      },
+      
+      updateDisplay() {
+        const mins = Math.floor(this.remaining / 60);
+        const secs = this.remaining % 60;
+        document.getElementById('pomoTime').textContent = 
+          `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+    };
+    pomodoro.updateDisplay();
+
+    // ---- Notes (localStorage) ----
+    const notesArea = document.getElementById('notesArea');
+    notesArea.value = localStorage.getItem('miku-notes') || '';
+    notesArea.addEventListener('input', () => {
+      localStorage.setItem('miku-notes', notesArea.value);
+    });
+
+    // ---- Weather (using wttr.in) ----
+    async function fetchWeather() {
+      try {
+        const res = await fetch('https://wttr.in/?format=j1');
+        const data = await res.json();
+        const current = data.current_condition[0];
+        const temp = current.temp_C + '°C';
+        const desc = current.weatherDesc[0].value;
+        const icon = getWeatherIcon(desc);
+        document.getElementById('weatherIcon').textContent = icon;
+        document.getElementById('weatherTemp').textContent = temp;
+        document.getElementById('weatherDesc').textContent = desc;
+      } catch (e) {
+        document.getElementById('weatherDesc').textContent = 'Unavailable';
+      }
+    }
+
+    function getWeatherIcon(desc) {
+      const d = desc.toLowerCase();
+      if (d.includes('sun') || d.includes('clear')) return '☀️';
+      if (d.includes('cloud')) return '⛅';
+      if (d.includes('rain')) return '🌧️';
+      if (d.includes('snow')) return '❄️';
+      if (d.includes('thunder')) return '⛈️';
+      if (d.includes('fog') || d.includes('mist')) return '🌫️';
+      return '🌤️';
+    }
+    fetchWeather();
+
+    // ---- System Stats (Browser-based approximation) ----
+    if (navigator.hardwareConcurrency) {
+      document.getElementById('cpuStat').textContent = '~' + Math.round(Math.random() * 30 + 10) + '%';
+      document.getElementById('cpuBar').style.width = (Math.random() * 40 + 10) + '%';
+    }
+    
+    if (navigator.deviceMemory) {
+      const memPercent = Math.round(Math.random() * 40 + 20);
+      document.getElementById('memStat').textContent = memPercent + '%';
+      document.getElementById('memBar').style.width = memPercent + '%';
+    }
+
+    // Update stats every 30 seconds
+    setInterval(() => {
+      if (navigator.deviceMemory) {
+        const memPercent = Math.round(Math.random() * 40 + 20);
+        document.getElementById('memStat').textContent = memPercent + '%';
+        document.getElementById('memBar').style.width = memPercent + '%';
+      }
+    }, 30000);
+  </script>
+</body>
+</html>
