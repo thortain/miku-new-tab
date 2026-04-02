@@ -634,37 +634,23 @@
       crypto: { name:'Crypto', icon:'💰', unique:true, render:async(el)=>{el.innerHTML='<div><span class="wloading">Loading...</span></div>';try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=gbp&include_24hr_change=true');const d=await r.json();const row=(s,data)=>{if(!data)return'';const p='£'+data.gbp.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});const c=(data.gbp_24h_change||0).toFixed(1);const cls=parseFloat(c)>=0?'up':'down';return'<div class="ticker-row"><span class="ticker-name">'+s+'</span><span><span class="ticker-price">'+p+'</span><span class="ticker-change '+cls+'">'+(parseFloat(c)>=0?'+':'')+c+'%</span></span></div>'};el.innerHTML='<div>'+row('BTC',d.bitcoin)+row('ETH',d.ethereum)+'</div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
       spell: { name:'D&D Spell', icon:'🔮', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Summoning...</span></div>';try{const id=Math.floor(Math.random()*300+1);const r=await fetch('https://www.dnd5eapi.co/api/spells/'+id);const d=await r.json();if(d.error)throw new Error();el.innerHTML='<div class="stack"><span class="wtitle wacc3">'+d.name+'</span><span class="wsub">'+(d.school?.name||'Unknown')+' · '+(d.casting_time||'?')+'</span><span class="wsub wacc">'+(d.level===0?'✨ Cantrip':'Lvl '+d.level)+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
       joke: { name:'Random Joke', icon:'😄', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Loading...</span></div>';try{const r=await fetch('https://official-joke-api.appspot.com/jokes/random');const d=await r.json();el.innerHTML='<div class="stack"><span style="font-size:0.85rem">'+d.setup+'</span><span class="wacc2" style="font-weight:600;font-size:0.9rem">'+d.punchline+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
-      fact: { name:'Useless Fact', icon:'💡', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Thinking...</span></div>';try{const r=await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random?language=en');const d=await r.json();el.innerHTML='<span style="font-size:0.82rem;line-height:1.4">'+d.text+'</span>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
-      currency: { name:'Currency', icon:'💱', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Fetching rates...</span></div>';try{const r=await fetch('https://api.frankfurter.app/latest?from=GBP');const d=await r.json();const{USD,JPY,EUR}=d.rates;el.innerHTML='<div class="stack"><span class="wtitle">💷 GBP</span><span class="wsub">🇺🇸 $'+USD.toFixed(2)+' &nbsp; 🇪🇺 €'+EUR.toFixed(2)+' &nbsp; 🇯🇵 ¥'+JPY.toFixed(0)+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      fact: { name:'Useless Fact', icon:'💡', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Thinking...</span></div>';try{const r=await fetch('https://uselessfacts.jsph.pl/api/v2facts/random?language=en');const d=await r.json();el.innerHTML='<span style="font-size:0.82rem;line-height:1.4">'+d.text+'</span>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      currency: { name:'Currency', icon:'💱', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Fetching rates...</span></div>';try{const r=await fetch('https://api.frankfurter.app/latest?from=GBP');const d=await r.json();const{upload USD,JPY,EUR}=d.rates;el.innerHTML='<div class="stack"><span class="wtitle">💷 GBP</span><span class="wsub">🇺🇸 $'+USD.toFixed(2)+' &nbsp; 🇪🇺 €'+EUR.toFixed(2)+' &nbsp; 🇯🇵 ¥'+JPY.toFixed(0)+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
       games: { name:'F2P Game', icon:'🕹️', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Loading...</span></div>';try{const r=await fetch('https://www.freetogame.com/api/games?sort-by=release-date&order=desc&limit=1');const[g]=await r.json();el.innerHTML='<div class="stack"><span class="wtitle wacc">'+g.title+'</span><span class="wsub">'+g.genre+' · '+g.platform+'</span>'+(g.game_url?'<span class="wsub wacc3">🌐 Browser game</span>':'')+'</div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
       monster: { name:'D&D Monster', icon:'👹', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Summoning beast...</span></div>';try{const id=Math.floor(Math.random()*300+1);const r=await fetch('https://www.dnd5eapi.co/api/monsters/'+id);const m=await r.json();if(m.error)throw new Error();const ac=m.armor_class?(m.armor_class[0]?.value??m.armor_class):'?';el.innerHTML='<div class="stack"><span class="wtitle wacc2">'+m.name+'</span><span class="wsub">⚔️ CR '+m.challenge_rating+' &nbsp; 🛡️ AC '+ac+' &nbsp; ❤️ HP '+m.hit_points+'</span><span class="wsub">'+m.size+' '+m.type+' · '+(m.alignment||'unaligned')+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
       news: { name:'Hacker News', icon:'📡', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Loading...</span></div>';try{const r=await fetch('https://hacker-news.firebaseio.com/v0/topstories.json');const ids=await r.json();const top=ids.slice(0,5);const stories=await Promise.all(top.map(id=>fetch('https://hacker-news.firebaseio.com/v0/item/'+id+'.json').then(x=>x.json())));el.innerHTML=stories.map(s=>'<div class="news-item"><a href="'+(s.url||'https://news.ycombinator.com/item?id='+s.id)+'" target="_blank">'+s.title+'</a></div>').join('')}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}}
     };
 
     const DEFAULT_LAYOUT=[
-      {key:'quicklinks-1',id:'quicklinks',x:30,y:130,w:220,pinned:false},
-      {key:'weather-1',id:'weather',x:280,y:130,w:210,pinned:false},
-      {key:'system-1',id:'system',x:520,y:130,w:200,pinned:false},
-      {key:'pomodoro-1',id:'pomodoro',x:30,y:370,w:200,pinned:false},
-      {key:'notes-1',id:'notes',x:260,y:370,w:260,pinned:false},
-      {key:'nowplaying-1',id:'nowplaying',x:550,y:370,w:220,pinned:false},
+      {id:'quicklinks',x:30,y:130,w:220,pinned:false},
+      {id:'weather',x:280,y:130,w:210,pinned:false},
+      {id:'system',x:520,y:130,w:200,pinned:false},
+      {id:'pomodoro',x:30,y:370,w:200,pinned:false},
+      {id:'notes',x:260,y:370,w:260,pinned:false},
+      {id:'nowplaying',x:550,y:370,w:220,pinned:false},
     ];
 
-    function newWidgetKey(id){return (typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():id+'-'+Date.now()+'-'+Math.random().toString(16).slice(2))}
-    function normalizeLayout(layout){
-      const source=Array.isArray(layout)&&layout.length?layout:DEFAULT_LAYOUT;
-      return source
-        .filter(item=>item&&item.id&&WIDGET_REGISTRY[item.id])
-        .map(item=>({
-          key:item.key||newWidgetKey(item.id),
-          id:item.id,
-          x:Number.isFinite(item.x)?item.x:30,
-          y:Number.isFinite(item.y)?item.y:130,
-          w:Number.isFinite(item.w)?item.w:220,
-          pinned:!!item.pinned
-        }));
-    }
-    function loadLayout(){try{return normalizeLayout(JSON.parse(localStorage.getItem('miku-widget-layout')))}catch{return normalizeLayout(null)}}
+    function loadLayout(){try{return JSON.parse(localStorage.getItem('miku-widget-layout'))}catch{return null}}
     function saveLayout(layout){localStorage.setItem('miku-widget-layout',JSON.stringify(layout))}
 
     let editMode=false;
@@ -672,15 +658,13 @@
 
     function renderWidgets(){
       canvas.innerHTML='';
-      const layout=loadLayout();
-      saveLayout(layout);
+      const layout=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));
       layout.forEach(item=>{
         const def=WIDGET_REGISTRY[item.id];
         if(!def)return;
         const card=document.createElement('div');
         card.className='widget-card'+(editMode?' edit-mode':'')+(item.pinned?' pinned':'');
         card.dataset.widgetId=item.id;
-        card.dataset.widgetKey=item.key;
         card.style.left=item.x+'px';
         card.style.top=item.y+'px';
         card.innerHTML='<span class="pin-indicator">📌</span>'+
@@ -694,12 +678,12 @@
         canvas.appendChild(card);
         const r=def.render(card.querySelector('.widget-body'));
         if(r&&typeof r.then==='function')r.catch(()=>{});
-        card.querySelector('.widget-remove-btn').onclick=()=>{const lay=loadLayout();const idx=lay.findIndex(l=>l.key===item.key);if(idx!==-1){lay.splice(idx,1);saveLayout(lay)}card.remove()};
-        card.querySelector('.widget-pin-btn').onclick=()=>{const lay=loadLayout();const entry=lay.find(l=>l.key===item.key);if(entry){entry.pinned=!entry.pinned;saveLayout(lay);card.classList.toggle('pinned',entry.pinned);card.querySelector('.widget-pin-btn').classList.toggle('pinned',entry.pinned)}};
+        card.querySelector('.widget-remove-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const idx=lay.findIndex(l=>l.id===item.id);if(idx!==-1)lay.splice(idx,1);saveLayout(lay);card.remove()};
+        card.querySelector('.widget-pin-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===item.id);if(e){e.pinned=!e.pinned;saveLayout(lay);card.classList.toggle('pinned',e.pinned);card.querySelector('.widget-pin-btn').classList.toggle('pinned',e.pinned)}};
         let drag=false,offX=0,offY=0;
-        card.querySelector('.widget-drag-handle').onmousedown=e=>{const lay=loadLayout();const entry=lay.find(l=>l.key===item.key);if(entry&&entry.pinned)return;drag=true;card.classList.add('dragging');offX=e.clientX-card.offsetLeft;offY=e.clientY-card.offsetTop;e.preventDefault()};
+        card.querySelector('.widget-drag-handle').onmousedown=e=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const entry=lay.find(l=>l.id===item.id);if(entry&&entry.pinned)return;drag=true;card.classList.add('dragging');offX=e.clientX-card.offsetLeft;offY=e.clientY-card.offsetTop;e.preventDefault()};
         document.addEventListener('mousemove',e=>{if(!drag)return;card.style.left=(e.clientX-offX)+'px';card.style.top=(e.clientY-offY)+'px'});
-        document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;card.classList.remove('dragging');const lay=loadLayout();const entry=lay.find(l=>l.key===item.key);if(entry){entry.x=card.offsetLeft;entry.y=card.offsetTop;saveLayout(lay)}});
+        document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;card.classList.remove('dragging');const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===item.id);if(e){e.x=card.offsetLeft;e.y=card.offsetTop;saveLayout(lay)}});
       });
     }
 
@@ -710,7 +694,7 @@
     function openAddModal(){
       const modal=document.getElementById('add-widget-modal');
       const grid=document.getElementById('modalGrid');
-      const layout=loadLayout();
+      const layout=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));
       const activeIds=new Set(layout.map(l=>l.id));
       grid.innerHTML='';
       Object.entries(WIDGET_REGISTRY).forEach(([id,def])=>{
@@ -718,7 +702,7 @@
         const opt=document.createElement('div');
         opt.className='modal-opt'+(already?' existing':'');
         opt.innerHTML='<div class="modal-opt-icon">'+def.icon+'</div><div class="modal-opt-name">'+def.name+'</div><div class="modal-opt-desc">'+(already?'Added':'Click to add')+'</div>';
-        if(!already)opt.onclick=()=>{const lay=loadLayout();const defaults={};DEFAULT_LAYOUT.forEach(d=>defaults[d.id]=d);const dp=defaults[id]||{x:30+(lay.length%4)*260,y:130+Math.floor(lay.length/4)*240,w:220};lay.push({key:newWidgetKey(id),id,x:dp.x,y:dp.y,w:dp.w||220,pinned:false});saveLayout(lay);modal.classList.remove('open');renderWidgets()};
+        if(!already)opt.onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const defaults={};DEFAULT_LAYOUT.forEach(d=>defaults[d.id]=d);const dp=defaults[id]||{x:30+(lay.length%4)*260,y:130+Math.floor(lay.length/4)*240,w:220};lay.push({id,x:dp.x,y:dp.y,w:dp.w||220,pinned:false});saveLayout(lay);modal.classList.remove('open');renderWidgets()};
         grid.appendChild(opt);
       });
       modal.classList.add('open');
@@ -737,6 +721,7 @@
 
     /* INIT */
     renderWidgets();
+  </script>
 </script>
 </body>
 </html>
