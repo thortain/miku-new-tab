@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Miku New Tab",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Hatsune Miku themed new tab page with widgets",
   "icons": {
     "48": "icons/icon-48.png",
@@ -12,5 +12,14 @@
     "newtab": "index.html"
   },
   "permissions": [],
-  "host_permissions": []
+  "host_permissions": [
+    "https://wttr.in/*",
+    "https://api.coingecko.com/*",
+    "https://www.dnd5eapi.co/*",
+    "https://official-joke-api.appspot.com/*",
+    "https://uselessfacts.jsph.pl/*",
+    "https://api.frankfurter.app/*",
+    "https://www.freetogame.com/*",
+    "https://hacker-news.firebaseio.com/*"
+  ]
 }

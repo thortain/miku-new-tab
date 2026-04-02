@@ -47,7 +47,7 @@
         render:(el)=>{
           el.innerHTML='<div class="countdown-display"><div class="countdown-time" id="cdT">--:--:--</div><div class="countdown-label" id="cdL">SET A DATE</div><div class="countdown-inputs"><input id="cdMo" placeholder="MM" type=number min=1 max=12><input id="cdD" placeholder="DD" type=number min=1 max=31><input id="cdH" placeholder="HH" type=number min=0 max=23><input id="cdMn" placeholder="MM" type=number min=0 max=59></div><div class="countdown-buttons"><button class="countdown-btn" id="cdSet">Set</button><button class="countdown-btn" id="cdClr">Clear</button></div></div>';
           let target=null,iv=null;
-          const tick=()=>{if(!target){el.querySelector('#cdT').textContent='--:--:--';el.querySelector('#cdL').textContent='SET A DATE';return}const diff=target-Date.now();if(diff<=0){el.querySelector('#cdT').textContent='00:00:00';el.querySelector('#cdL').textContent="IT'S TIME!";clearInterval(iv);return}const s=Math.floor(diff/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;el.querySelector('#cdT').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');const d=Math.ceil(diff/86400000);el.querySelector('#cdL').textContent=d===1?'TOMORROW':d+' DAYS'};
+          const tick=()=>{if(!target){el.querySelector('#cdT').textContent='--:--:--';el.querySelector('#cdL').textContent='SET A DATE';return}const diff=target-Date.now();if(diff<=0){el.querySelector('#cdT').textContent='00:00:00';el.querySelector('#cdL').textContent="IT'S TIME!";clearInterval(iv);iv=null;return}const s=Math.floor(diff/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;el.querySelector('#cdT').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');const d=Math.ceil(diff/86400000);el.querySelector('#cdL').textContent=d===1?'TOMORROW':d+' DAYS'};
           const st=localStorage.getItem('miku-cd');if(st){target=new Date(st);iv=setInterval(tick,1000)}tick();
           el.querySelector('#cdSet').onclick=()=>{const mo=el.querySelector('#cdMo').value,d=el.querySelector('#cdD').value,h=el.querySelector('#cdH').value,mn=el.querySelector('#cdMn').value;if(!mo||!d)return;const now=new Date();target=new Date(now.getFullYear(),parseInt(mo)-1,parseInt(d),parseInt(h)||0,parseInt(mn)||0);if(target<now)target.setFullYear(now.getFullYear()+1);localStorage.setItem('miku-cd',target.toISOString());if(!iv)iv=setInterval(tick,1000);tick()};
           el.querySelector('#cdClr').onclick=()=>{target=null;clearInterval(iv);iv=null;localStorage.removeItem('miku-cd');el.querySelector('#cdMo').value='';el.querySelector('#cdD').value='';el.querySelector('#cdH').value='';el.querySelector('#cdMn').value='';tick()};
@@ -77,6 +77,7 @@
 
     let editMode=false;
     const canvas=document.getElementById('widget-canvas');
+    let drag=false,offX=0,offY=0,dragCard=null;
 
     function renderWidgets(){
       canvas.innerHTML='';
@@ -103,11 +104,12 @@
         card.querySelector('.widget-remove-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const idx=lay.findIndex(l=>l.id===item.id);if(idx!==-1)lay.splice(idx,1);saveLayout(lay);card.remove()};
         card.querySelector('.widget-pin-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===item.id);if(e){e.pinned=!e.pinned;saveLayout(lay);card.classList.toggle('pinned',e.pinned);card.querySelector('.widget-pin-btn').classList.toggle('pinned',e.pinned)}};
         let drag=false,offX=0,offY=0;
-        card.querySelector('.widget-drag-handle').onmousedown=e=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const entry=lay.find(l=>l.id===item.id);if(entry&&entry.pinned)return;drag=true;card.classList.add('dragging');offX=e.clientX-card.offsetLeft;offY=e.clientY-card.offsetTop;e.preventDefault()};
-        document.addEventListener('mousemove',e=>{if(!drag)return;card.style.left=(e.clientX-offX)+'px';card.style.top=(e.clientY-offY)+'px'});
-        document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;card.classList.remove('dragging');const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===item.id);if(e){e.x=card.offsetLeft;e.y=card.offsetTop;saveLayout(lay)}});
+        card.querySelector('.widget-drag-handle').onmousedown=e=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const entry=lay.find(l=>l.id===item.id);if(entry&&entry.pinned)return;drag=true;dragCard=card;card.classList.add('dragging');offX=e.clientX-card.offsetLeft;offY=e.clientY-card.offsetTop;e.preventDefault()};
       });
     }
+
+    document.addEventListener('mousemove',e=>{if(!drag||!dragCard)return;dragCard.style.left=(e.clientX-offX)+'px';dragCard.style.top=(e.clientY-offY)+'px'});
+    document.addEventListener('mouseup',()=>{if(!drag||!dragCard)return;drag=false;dragCard.classList.remove('dragging');const id=dragCard.dataset.widgetId;const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===id);if(e){e.x=dragCard.offsetLeft;e.y=dragCard.offsetTop;saveLayout(lay)}dragCard=null;});
 
     document.getElementById('editModeBtn').onclick=()=>{editMode=!editMode;document.getElementById('editModeBtn').classList.toggle('active',editMode);document.getElementById('editModeBtn').textContent=editMode?'✓ Done':'✎ Edit';document.querySelectorAll('.widget-card').forEach(c=>c.classList.toggle('edit-mode',editMode))};
     document.getElementById('addWidgetBtn').onclick=openAddModal;
