@@ -12,6 +12,7 @@
     "newtab": "index.html"
   },
   "permissions": [],
+  "content_security_policy": "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; object-src 'self';",
   "browser_specific_settings": {
     "gecko": {
       "id": "miku-newtab@lucrecia",
