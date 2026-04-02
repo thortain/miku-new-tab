@@ -336,239 +336,143 @@
       color: var(--miku-cyan);
     }
 
-    /* ---- Widgets Grid ---- */
-    .widgets-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
+    /* ---- Widget Canvas ---- */
+    #widget-canvas {
+      position: relative;
       width: 100%;
-      max-width: 900px;
-    }
-
-    .widget {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 20px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-    }
-
-    .widget:hover {
-      border-color: var(--miku-pink);
-      box-shadow: 0 0 25px rgba(255, 102, 204, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .widget-title {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--miku-pink);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .widget-title::before {
-      content: '♪';
-      color: var(--miku-cyan);
-    }
-
-    /* ---- Quick Links Widget ---- */
-    .quick-links {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .quick-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
-      background: rgba(0, 229, 255, 0.08);
-      border-radius: 8px;
-      color: white;
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-    }
-
-    .quick-link:hover {
-      background: rgba(0, 229, 255, 0.18);
-      padding-left: 16px;
-    }
-
-    .quick-link .favicon {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      background: var(--miku-purple);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-    }
-
-    /* ---- Weather Widget ---- */
-    .weather-widget {
-      text-align: center;
-    }
-
-    .weather-icon {
-      font-size: 2.5rem;
-      margin-bottom: 5px;
-    }
-
-    .weather-temp {
-      font-size: 2rem;
-      font-weight: 700;
-      color: white;
-    }
-
-    .weather-desc {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    /* ---- System Stats Widget ---- */
-    .system-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .stat-label {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
-    }
-
-    .stat-value {
-      color: var(--miku-cyan);
-      font-weight: 600;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-      margin-top: 4px;
+      min-height: 100vh;
       overflow: hidden;
     }
 
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--miku-cyan), var(--miku-pink));
-      border-radius: 2px;
-      transition: width 0.5s ease;
+    .widget-card {
+      position: absolute;
+      background: rgba(5, 15, 35, 0.72);
+      border: 1px solid rgba(57, 255, 220, 0.22);
+      border-radius: 16px;
+      padding: 16px;
+      min-width: 200px;
+      min-height: 120px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: box-shadow 0.2s, border-color 0.2s;
+      z-index: 10;
+      user-select: none;
     }
+    .widget-card:hover { box-shadow: 0 0 25px rgba(57, 255, 220, 0.18); }
+    .widget-card.edit-mode { border: 1px dashed rgba(57, 255, 220, 0.55); }
+    .widget-card.dragging { cursor: grabbing; box-shadow: 0 12px 50px rgba(0,0,0,0.6),0 0 30px rgba(57,255,220,0.2); z-index: 999; opacity: 0.93; border-color: rgba(57,255,220,0.7); }
+    .widget-card.pinned .widget-drag-handle { opacity: 0.2 !important; cursor: default !important; }
+    .pin-indicator { position: absolute; top: 8px; left: 10px; font-size: 0.7rem; opacity: 0; color: var(--miku-lime); transition: opacity 0.2s; pointer-events: none; }
+    .widget-card.pinned .pin-indicator { opacity: 1; }
+    .widget-controls { display: none; align-items: center; gap: 5px; position: absolute; top: 7px; right: 7px; }
+    .edit-mode .widget-controls { display: flex; }
+    .widget-drag-handle { font-size: 0.8rem; color: rgba(57,255,220,0.4); cursor: grab; user-select: none; line-height: 1; transition: color 0.2s; }
+    .widget-drag-handle:hover { color: var(--miku-cyan); }
+    .widget-pin-btn { font-size: 0.85rem; cursor: pointer; opacity: 0; transition: opacity 0.2s, transform 0.2s; line-height: 1; }
+    .widget-pin-btn:hover { transform: scale(1.2); }
+    .widget-pin-btn.pinned { opacity: 1; }
+    .widget-remove-btn { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,77,109,0.12); border: 1px solid rgba(255,77,109,0.3); color: rgba(255,100,100,0.7); font-size: 0.9rem; line-height: 1; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; padding: 0; }
+    .widget-remove-btn:hover { background: #ff4d6d; color: white; border-color: #ff4d6d; }
+    .widget-title-bar { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; color: var(--miku-pink); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; pointer-events: none; }
+    .widget-title-bar::before { content: '♪'; color: var(--miku-cyan); }
+    .widget-body { pointer-events: auto; }
 
-    /* ---- Notes Widget ---- */
-    .notes-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 10px;
-      color: white;
-      font-family: 'Quicksand', sans-serif;
-      font-size: 0.9rem;
-      resize: none;
-      outline: none;
-      min-height: 80px;
-    }
+    /* ---- Top Bar ---- */
+    .top-bar { display: flex; gap: 10px; margin-bottom: 12px; opacity: 0.75; transition: opacity 0.2s; }
+    .top-bar:hover { opacity: 1; }
+    .top-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid rgba(57,255,220,0.3); background: rgba(5,15,35,0.6); color: var(--miku-cyan); font-family: 'Quicksand',sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; backdrop-filter: blur(8px); transition: all 0.2s; letter-spacing: 0.5px; }
+    .top-btn:hover { background: rgba(57,255,220,0.15); border-color: var(--miku-cyan); box-shadow: 0 0 14px rgba(57,255,220,0.25); }
+    .top-btn.active { background: rgba(255,102,204,0.2); color: var(--miku-pink); border-color: rgba(255,102,204,0.5); }
 
-    .notes-input:focus {
-      border-color: var(--miku-cyan);
-    }
+    /* ---- Add Widget Modal ---- */
+    #add-widget-modal { display: none; position: fixed; inset: 0; background: rgba(5,10,25,0.75); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
+    #add-widget-modal.open { display: flex; }
+    .modal-box { background: rgba(5,12,30,0.95); border: 1px solid rgba(57,255,220,0.2); border-radius: 20px; padding: 24px; max-width: 480px; width: 90%; max-height: 80vh; overflow-y: auto; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .modal-header h2 { font-size: 1rem; font-weight: 700; color: var(--miku-cyan); letter-spacing: 1px; }
+    .modal-close { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,100,100,0.3); background: rgba(255,77,109,0.1); color: rgba(255,100,100,0.7); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; padding: 0; }
+    .modal-close:hover { background: #ff4d6d; color: white; border-color: #ff4d6d; }
+    .modal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .modal-opt { background: rgba(57,255,220,0.05); border: 1px solid rgba(57,255,220,0.12); border-radius: 12px; padding: 12px; cursor: pointer; transition: all 0.2s; text-align: left; }
+    .modal-opt:hover { background: rgba(57,255,220,0.12); border-color: rgba(57,255,220,0.4); box-shadow: 0 0 12px rgba(57,255,220,0.15); transform: translateY(-1px); }
+    .modal-opt.existing { opacity: 0.45; cursor: not-allowed; }
+    .modal-opt.existing:hover { transform: none; box-shadow: none; }
+    .modal-opt-icon { font-size: 1.2rem; margin-bottom: 4px; }
+    .modal-opt-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+    .modal-opt-desc { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
 
-    /* ---- Pomodoro Widget ---- */
-    .pomodoro-display {
-      text-align: center;
-    }
-
-    .pomo-time {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: white;
-      text-shadow: var(--text-glow);
-    }
-
-    .pomo-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 10px;
-    }
-
-    .pomo-btn {
-      padding: 6px 14px;
-      border: 1px solid var(--glass-border);
-      background: rgba(0, 229, 255, 0.1);
-      color: var(--miku-cyan);
-      border-radius: 20px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .pomo-btn:hover {
-      background: var(--miku-cyan);
-      color: var(--miku-dark);
-    }
-
-    /* ---- Song Widget ---- */
-    .song-widget {
-      text-align: center;
-    }
-
-    .song-title {
-      color: white;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .song-artist {
-      color: var(--miku-pink);
-      font-size: 0.85rem;
-      margin-top: 4px;
-    }
-
-    .visualizer {
-      display: flex;
-      justify-content: center;
-      gap: 3px;
-      margin-top: 10px;
-    }
-
-    .viz-bar {
-      width: 4px;
-      background: linear-gradient(to top, var(--miku-purple), var(--miku-cyan));
-      border-radius: 2px;
-      animation: viz-dance 0.8s ease-in-out infinite alternate;
-    }
-
-    .viz-bar:nth-child(1) { height: 12px; animation-delay: 0s; }
-    .viz-bar:nth-child(2) { height: 20px; animation-delay: 0.1s; }
-    .viz-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
-    .viz-bar:nth-child(4) { height: 16px; animation-delay: 0.3s; }
-    .viz-bar:nth-child(5) { height: 24px; animation-delay: 0.4s; }
-
-    @keyframes viz-dance {
-      from { transform: scaleY(0.4); }
-      to { transform: scaleY(1); }
-    }
-
+    /* ---- Widget internals ---- */
+    .quick-links { display: flex; flex-direction: column; gap: 6px; }
+    .quick-link { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(57,255,220,0.07); border-radius: 8px; color: white; text-decoration: none; font-size: 0.88rem; transition: all 0.2s; position: relative; }
+    .quick-link:hover { background: rgba(57,255,220,0.15); padding-left: 13px; }
+    .quick-link .favicon { width: 16px; height: 16px; border-radius: 4px; background: var(--miku-purple); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
+    .quick-link .remove-btn { position: absolute; right: 6px; opacity: 0; color: rgba(255,100,100,0.5); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+    .quick-link:hover .remove-btn { opacity: 1; }
+    .quick-link:hover .remove-btn:hover { color: #ff6464; }
+    .add-link-form { display: flex; gap: 5px; margin-top: 6px; }
+    .add-link-input { padding: 5px 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(57,255,220,0.15); border-radius: 6px; color: white; font-family: 'Quicksand',sans-serif; font-size: 0.78rem; outline: none; transition: border-color 0.2s; }
+    .add-link-input:nth-child(1) { flex: 1; }
+    .add-link-input:nth-child(2) { flex: 2; }
+    .add-link-input:focus { border-color: var(--miku-cyan); }
+    .add-link-input::placeholder { color: rgba(255,255,255,0.3); }
+    .add-link-btn { width: 28px; height: 28px; flex-shrink: 0; background: rgba(57,255,220,0.12); border: 1px solid rgba(57,255,220,0.25); border-radius: 6px; color: var(--miku-cyan); font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; padding: 0; }
+    .add-link-btn:hover { background: var(--miku-cyan); color: var(--miku-dark); }
+    .weather-widget { text-align: center; }
+    .weather-icon { font-size: 2rem; margin-bottom: 4px; }
+    .weather-temp { font-size: 1.8rem; font-weight: 700; color: white; }
+    .weather-desc { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .system-stats { display: flex; flex-direction: column; gap: 8px; }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; }
+    .stat-label { color: rgba(255,255,255,0.65); font-size: 0.85rem; }
+    .stat-value { color: var(--miku-cyan); font-weight: 600; font-size: 0.85rem; }
+    .progress-bar { width: 100%; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--miku-cyan), var(--miku-pink)); border-radius: 2px; transition: width 0.5s; }
+    .pomodoro-display { text-align: center; }
+    .pomo-time { font-size: 2rem; font-weight: 700; color: white; text-shadow: var(--text-glow); }
+    .pomo-buttons { display: flex; gap: 8px; justify-content: center; margin-top: 8px; }
+    .pomo-btn { padding: 5px 12px; border: 1px solid rgba(57,255,220,0.25); background: rgba(57,255,220,0.08); color: var(--miku-cyan); border-radius: 20px; font-family: 'Quicksand',sans-serif; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+    .pomo-btn:hover { background: var(--miku-cyan); color: var(--miku-dark); }
+    .notes-input { width: 100%; min-height: 80px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 8px; color: white; font-family: 'Quicksand',sans-serif; font-size: 0.85rem; resize: vertical; outline: none; transition: border-color 0.2s; }
+    .notes-input:focus { border-color: var(--miku-cyan); }
+    .notes-input::placeholder { color: rgba(255,255,255,0.3); }
+    .song-widget { text-align: center; }
+    .song-title { color: white; font-weight: 600; font-size: 0.9rem; }
+    .song-artist { color: var(--miku-pink); font-size: 0.8rem; margin-top: 3px; }
+    .visualizer { display: flex; justify-content: center; gap: 3px; margin-top: 8px; }
+    .viz-bar { width: 4px; background: linear-gradient(to top, var(--miku-purple), var(--miku-cyan)); border-radius: 2px; animation: viz-dance 0.8s ease-in-out infinite alternate; }
+    .viz-bar:nth-child(1){height:12px;animation-delay:0s;}
+    .viz-bar:nth-child(2){height:20px;animation-delay:0.1s;}
+    .viz-bar:nth-child(3){height:8px;animation-delay:0.2s;}
+    .viz-bar:nth-child(4){height:16px;animation-delay:0.3s;}
+    .viz-bar:nth-child(5){height:24px;animation-delay:0.4s;}
+    @keyframes viz-dance { from{transform:scaleY(0.4)} to{transform:scaleY(1)} }
+    .countdown-display { text-align: center; }
+    .countdown-time { font-size: 1.8rem; font-weight: 700; color: white; text-shadow: var(--text-glow); }
+    .countdown-label { font-size: 0.7rem; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-top: 2px; }
+    .countdown-inputs { display: flex; gap: 5px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
+    .countdown-inputs input { width: 48px; padding: 4px 3px; text-align: center; background: rgba(255,255,255,0.06); border: 1px solid rgba(57,255,220,0.2); border-radius: 5px; color: white; font-family: 'Quicksand',sans-serif; font-size: 0.78rem; outline: none; }
+    .countdown-inputs input:focus { border-color: var(--miku-cyan); }
+    .countdown-buttons { display: flex; gap: 6px; justify-content: center; margin-top: 7px; }
+    .countdown-btn { padding: 4px 11px; border: 1px solid rgba(57,255,220,0.2); background: rgba(57,255,220,0.07); color: var(--miku-cyan); border-radius: 20px; font-family: 'Quicksand',sans-serif; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+    .countdown-btn:hover { background: var(--miku-cyan); color: var(--miku-dark); }
+    .ticker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .ticker-name { font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 600; }
+    .ticker-price { font-size: 0.85rem; color: var(--miku-cyan); font-weight: 600; }
+    .ticker-change { font-size: 0.75rem; margin-left: 5px; }
+    .ticker-change.up { color: #4ade80; }
+    .ticker-change.down { color: #f87171; }
+    .wloading { font-size: 0.8rem; color: rgba(255,255,255,0.35); }
+    .werror { font-size: 0.75rem; color: rgba(255,100,100,0.6); }
+    .stack { display: flex; flex-direction: column; gap: 3px; }
+    .wtitle { font-size: 0.95rem; font-weight: 600; }
+    .wsub { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+    .wacc  { color: var(--miku-cyan); }
+    .wacc2 { color: var(--miku-pink); }
+    .wacc3 { color: var(--miku-lime); }
+    .news-item { text-align: left; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.78rem; line-height: 1.3; }
+    .news-item:last-child { border-bottom: none; }
+    .news-item a { color: var(--miku-cyan); text-decoration: none; }
+    .news-item a:hover { text-decoration: underline; }
     /* ---- Footer ---- */
     .footer {
       position: fixed;
@@ -651,231 +555,173 @@
       </div>
     </div>
 
-    <!-- Widgets -->
-    <div class="widgets-grid">
-      <!-- Quick Links -->
-      <div class="widget">
-        <div class="widget-title">Quick Links</div>
-        <div class="quick-links">
-          <a href="https://youtube.com" class="quick-link" target="_blank">
-            <span class="favicon">▶</span> YouTube
-          </a>
-          <a href="https://twitter.com" class="quick-link" target="_blank">
-            <span class="favicon">𝕏</span> Twitter / X
-          </a>
-          <a href="https://reddit.com" class="quick-link" target="_blank">
-            <span class="favicon">r</span> Reddit
-          </a>
-          <a href="https://github.com" class="quick-link" target="_blank">
-            <span class="favicon">◈</span> GitHub
-          </a>
-        </div>
-      </div>
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <button class="top-btn" id="addWidgetBtn">+ Add Widget</button>
+      <button class="top-btn" id="editModeBtn">✎ Edit</button>
+    </div>
 
-      <!-- Weather -->
-      <div class="widget">
-        <div class="widget-title">Weather</div>
-        <div class="weather-widget">
-          <div class="weather-icon" id="weatherIcon">🌤️</div>
-          <div class="weather-temp" id="weatherTemp">--°</div>
-          <div class="weather-desc" id="weatherDesc">Loading...</div>
-        </div>
+    <!-- Widget Canvas -->
+    <div id="widget-canvas"></div>
+  </div>
+  <!-- Add Widget Modal -->
+  <div id="add-widget-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Add Widget</h2>
+        <button class="modal-close" id="closeModalBtn">×</button>
       </div>
-
-      <!-- System Stats -->
-      <div class="widget">
-        <div class="widget-title">System</div>
-        <div class="system-stats">
-          <div class="stat-row">
-            <span class="stat-label">CPU</span>
-            <span class="stat-value" id="cpuStat">--%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" id="cpuBar" style="width: 0%"></div></div>
-          <div class="stat-row">
-            <span class="stat-label">Memory</span>
-            <span class="stat-value" id="memStat">--%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" id="memBar" style="width: 0%"></div></div>
-        </div>
-      </div>
-
-      <!-- Pomodoro -->
-      <div class="widget">
-        <div class="widget-title">Pomodoro</div>
-        <div class="pomodoro-display">
-          <div class="pomo-time" id="pomoTime">25:00</div>
-          <div class="pomo-buttons">
-            <button class="pomo-btn" onclick="pomodoro.start()">Start</button>
-            <button class="pomo-btn" onclick="pomodoro.reset()">Reset</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Notes -->
-      <div class="widget">
-        <div class="widget-title">Quick Notes</div>
-        <textarea class="notes-input" id="notesArea" placeholder="Jot down ideas..."></textarea>
-      </div>
-
-      <!-- Now Playing -->
-      <div class="widget">
-        <div class="widget-title">Now Playing</div>
-        <div class="song-widget">
-          <div class="song-title" id="songTitle">World is Mine</div>
-          <div class="song-artist" id="songArtist">Hatsune Miku</div>
-          <div class="visualizer">
-            <div class="viz-bar"></div>
-            <div class="viz-bar"></div>
-            <div class="viz-bar"></div>
-            <div class="viz-bar"></div>
-            <div class="viz-bar"></div>
-          </div>
-        </div>
-      </div>
+      <div class="modal-grid" id="modalGrid"></div>
     </div>
   </div>
 
-  <div class="music-bars">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-  </div>
-
-  <div class="footer">
-    <a href="#">♪ Miku New Tab</a>
-  </div>
-
   <script>
-    // ---- Particles ----
-    const particlesContainer = document.getElementById('particles');
-    for (let i = 0; i < 40; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.top = Math.random() * 100 + '%';
-      p.style.animationDelay = Math.random() * 5 + 's';
-      particlesContainer.appendChild(p);
-    }
-
-    // ---- Clock ----
-    function updateClock() {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-      const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
-      document.getElementById('clock').textContent = timeStr;
-      document.getElementById('date').textContent = dateStr;
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // ---- Search ----
-    document.getElementById('searchInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const query = e.target.value.trim();
-        if (query) {
-          window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-          e.target.value = '';
+    /* WIDGET REGISTRY */
+    const WIDGET_REGISTRY = {
+      quicklinks: {
+        name: 'Quick Links', icon: '🔗', unique: true,
+        render: (el) => {
+          const FAV={'youtube.com':'▶','youtu.be':'▶','twitch.tv':'📺','twitter.com':'𝕏','x.com':'𝕏','reddit.com':'r','old.reddit.com':'r','github.com':'◈','gitlab.com':'◈','discord.com':'💬','discord.gg':'💬','spotify.com':'♫','soundcloud.com':'☁','netflix.com':'🎬','store.steampowered.com':'🎮','chat.openai.com':'🤖','claude.ai':'🤖','default':'🔗'};
+          const DEFAULTS=[{name:'YouTube',url:'https://youtube.com'},{name:'Twitter / X',url:'https://x.com'},{name:'Reddit',url:'https://reddit.com'},{name:'GitHub',url:'https://github.com'}];
+          function gf(u){try{const h=new URL(u.startsWith('http')?u:'http://'+u).hostname;for(const k of Object.keys(FAV))if(h.includes(k))return FAV[k];return FAV.default}catch{return FAV.default}}
+          function load(){return JSON.parse(localStorage.getItem('miku-links')||'null')||DEFAULTS}
+          function save(l){localStorage.setItem('miku-links',JSON.stringify(l))}
+          function render(){el.querySelector('.ql-links').innerHTML='';load().forEach((l,i)=>{const a=document.createElement('a');a.className='quick-link';a.href=l.url;a.target='_blank';a.innerHTML='<span class="favicon">'+gf(l.url)+'</span>'+l.name+'<span class="remove-btn" data-i="'+i+'">×</span>';el.querySelector('.ql-links').appendChild(a)});el.querySelectorAll('.ql-links .remove-btn').forEach(b=>{b.onclick=e=>{e.preventDefault();e.stopPropagation();const l=load();l.splice(+b.dataset.i,1);save(l);render()}})}
+          el.innerHTML='<div class="ql-links"></div><div class="add-link-form"><input class="add-link-input" id="ql-name" placeholder="Name" maxlength=24><input class="add-link-input" id="ql-url" placeholder="URL" maxlength=500><button class="add-link-btn" id="ql-add">+</button></div>';
+          el.querySelector('#ql-add').onclick=()=>{const n=el.querySelector('#ql-name').value.trim();let u=el.querySelector('#ql-url').value.trim();if(!u)return;if(!u.match(/^https?:\/\//i))u='https://'+u;const l=load();l.push({name:n||new URL(u).hostname,url:u});save(l);el.querySelector('#ql-name').value='';el.querySelector('#ql-url').value='';render()};
+          el.querySelector('#ql-url').onkeydown=e=>{if(e.key==='Enter')el.querySelector('#ql-add').click()};
+          render();
         }
-      }
-    });
-
-    // ---- Pomodoro ----
-    const pomodoro = {
-      duration: 25 * 60,
-      remaining: 25 * 60,
-      interval: null,
-      running: false,
-      
-      start() {
-        if (this.running) return;
-        this.running = true;
-        this.interval = setInterval(() => {
-          this.remaining--;
-          this.updateDisplay();
-          if (this.remaining <= 0) {
-            this.reset();
-            new Notification('🎵 Pomodoro Complete! Time for a break~');
-          }
-        }, 1000);
       },
-      
-      reset() {
-        clearInterval(this.interval);
-        this.running = false;
-        this.remaining = this.duration;
-        this.updateDisplay();
+      weather: {
+        name: 'Weather', icon: '🌤️', unique: true,
+        render: async (el) => {
+          el.innerHTML='<div class="weather-widget"><div class="weather-icon" id="wIcon">🌤️</div><div class="weather-temp" id="wTemp">--°</div><div class="weather-desc" id="wDesc">Loading...</div></div>';
+          try{const r=await fetch('https://wttr.in/?format=j1');const d=await r.json();const c=d.current_condition[0];const icons={'sun':'☀️','clear':'☀️','cloud':'⛅','rain':'🌧️','snow':'❄️','thunder':'⛈️','fog':'🌫️','mist':'🌫️'};let ico='🌤️';const wd=c.weatherDesc[0].value.toLowerCase();for(const k of Object.keys(icons))if(wd.includes(k)){ico=icons[k];break}el.querySelector('#wIcon').textContent=ico;el.querySelector('#wTemp').textContent=c.temp_C+'°C';el.querySelector('#wDesc').textContent=c.weatherDesc[0].value}catch{el.querySelector('#wDesc').textContent='Unavailable'}
+        }
       },
-      
-      updateDisplay() {
-        const mins = Math.floor(this.remaining / 60);
-        const secs = this.remaining % 60;
-        document.getElementById('pomoTime').textContent = 
-          `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      }
+      system: {
+        name: 'System', icon: '💻', unique: true,
+        render: (el) => {
+          el.innerHTML='<div class="system-stats"><div class="stat-row"><span class="stat-label">CPU</span><span class="stat-value" id="wCpu">--%</span></div><div class="progress-bar"><div class="progress-fill" id="wCpuBar" style="width:0%"></div></div><div class="stat-row"><span class="stat-label">Memory</span><span class="stat-value" id="wMem">--%</span></div><div class="progress-bar"><div class="progress-fill" id="wMemBar" style="width:0%"></div></div></div>';
+          const u=()=>{if(navigator.hardwareConcurrency){const v=Math.round(Math.random()*30+10);el.querySelector('#wCpu').textContent='~'+v+'%';el.querySelector('#wCpuBar').style.width=v+'%'}if(navigator.deviceMemory){const v=Math.round(Math.random()*40+20);el.querySelector('#wMem').textContent=v+'%';el.querySelector('#wMemBar').style.width=v+'%'}};
+          u();setInterval(u,30000);
+        }
+      },
+      pomodoro: {
+        name: 'Pomodoro', icon: '🍅', unique: true,
+        render: (el) => {
+          el.innerHTML='<div class="pomodoro-display"><div class="pomo-time" id="pTime">25:00</div><div class="pomo-buttons"><button class="pomo-btn" id="pStart">Start</button><button class="pomo-btn" id="pReset">Reset</button></div></div>';
+          const pom={dur:1500,rem:1500,iv:null,run:false};
+          const tick=()=>{pom.rem--;const m=Math.floor(pom.rem/60),s=pom.rem%60;el.querySelector('#pTime').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(pom.rem<=0){pom.run=false;pom.rem=pom.dur;clearInterval(pom.iv);pom.iv=null;el.querySelector('#pStart').textContent='Start'}};
+          el.querySelector('#pStart').onclick=()=>{if(pom.run){clearInterval(pom.iv);pom.run=false;pom.iv=null;el.querySelector('#pStart').textContent='Resume'}else{pom.run=true;el.querySelector('#pStart').textContent='Pause';pom.iv=setInterval(tick,1000)}};
+          el.querySelector('#pReset').onclick=()=>{clearInterval(pom.iv);pom.run=false;pom.iv=null;pom.rem=pom.dur;el.querySelector('#pTime').textContent='25:00';el.querySelector('#pStart').textContent='Start'};
+        }
+      },
+      notes: { name: 'Quick Notes', icon: '📝', unique: true, render:(el)=>{el.innerHTML='<textarea class="notes-input" id="wNotes" placeholder="Jot down ideas..."></textarea>';const ta=el.querySelector('#wNotes');ta.value=localStorage.getItem('miku-notes')||'';ta.oninput=()=>localStorage.setItem('miku-notes',ta.value)}},
+      nowplaying: { name: 'Now Playing', icon: '🎵', unique: true, render:(el)=>{el.innerHTML='<div class="song-widget"><div class="song-title">World is Mine</div><div class="song-artist">Hatsune Miku</div><div class="visualizer"><div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div></div></div>'}},
+      countdown: {
+        name: 'Countdown', icon: '⏰', unique: true,
+        render:(el)=>{
+          el.innerHTML='<div class="countdown-display"><div class="countdown-time" id="cdT">--:--:--</div><div class="countdown-label" id="cdL">SET A DATE</div><div class="countdown-inputs"><input id="cdMo" placeholder="MM" type=number min=1 max=12><input id="cdD" placeholder="DD" type=number min=1 max=31><input id="cdH" placeholder="HH" type=number min=0 max=23><input id="cdMn" placeholder="MM" type=number min=0 max=59></div><div class="countdown-buttons"><button class="countdown-btn" id="cdSet">Set</button><button class="countdown-btn" id="cdClr">Clear</button></div></div>';
+          let target=null,iv=null;
+          const tick=()=>{if(!target){el.querySelector('#cdT').textContent='--:--:--';el.querySelector('#cdL').textContent='SET A DATE';return}const diff=target-Date.now();if(diff<=0){el.querySelector('#cdT').textContent='00:00:00';el.querySelector('#cdL').textContent="IT'S TIME!";clearInterval(iv);return}const s=Math.floor(diff/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;el.querySelector('#cdT').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');const d=Math.ceil(diff/86400000);el.querySelector('#cdL').textContent=d===1?'TOMORROW':d+' DAYS'};
+          const st=localStorage.getItem('miku-cd');if(st){target=new Date(st);iv=setInterval(tick,1000)}tick();
+          el.querySelector('#cdSet').onclick=()=>{const mo=el.querySelector('#cdMo').value,d=el.querySelector('#cdD').value,h=el.querySelector('#cdH').value,mn=el.querySelector('#cdMn').value;if(!mo||!d)return;const now=new Date();target=new Date(now.getFullYear(),parseInt(mo)-1,parseInt(d),parseInt(h)||0,parseInt(mn)||0);if(target<now)target.setFullYear(now.getFullYear()+1);localStorage.setItem('miku-cd',target.toISOString());if(!iv)iv=setInterval(tick,1000);tick()};
+          el.querySelector('#cdClr').onclick=()=>{target=null;clearInterval(iv);iv=null;localStorage.removeItem('miku-cd');el.querySelector('#cdMo').value='';el.querySelector('#cdD').value='';el.querySelector('#cdH').value='';el.querySelector('#cdMn').value='';tick()};
+        }
+      },
+      crypto: { name:'Crypto', icon:'💰', unique:true, render:async(el)=>{el.innerHTML='<div><span class="wloading">Loading...</span></div>';try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=gbp&include_24hr_change=true');const d=await r.json();const row=(s,data)=>{if(!data)return'';const p='£'+data.gbp.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});const c=(data.gbp_24h_change||0).toFixed(1);const cls=parseFloat(c)>=0?'up':'down';return'<div class="ticker-row"><span class="ticker-name">'+s+'</span><span><span class="ticker-price">'+p+'</span><span class="ticker-change '+cls+'">'+(parseFloat(c)>=0?'+':'')+c+'%</span></span></div>'};el.innerHTML='<div>'+row('BTC',d.bitcoin)+row('ETH',d.ethereum)+'</div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      spell: { name:'D&D Spell', icon:'🔮', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Summoning...</span></div>';try{const id=Math.floor(Math.random()*300+1);const r=await fetch('https://www.dnd5eapi.co/api/spells/'+id);const d=await r.json();if(d.error)throw new Error();el.innerHTML='<div class="stack"><span class="wtitle wacc3">'+d.name+'</span><span class="wsub">'+(d.school?.name||'Unknown')+' · '+(d.casting_time||'?')+'</span><span class="wsub wacc">'+(d.level===0?'✨ Cantrip':'Lvl '+d.level)+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      joke: { name:'Random Joke', icon:'😄', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Loading...</span></div>';try{const r=await fetch('https://official-joke-api.appspot.com/jokes/random');const d=await r.json();el.innerHTML='<div class="stack"><span style="font-size:0.85rem">'+d.setup+'</span><span class="wacc2" style="font-weight:600;font-size:0.9rem">'+d.punchline+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      fact: { name:'Useless Fact', icon:'💡', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Thinking...</span></div>';try{const r=await fetch('https://uselessfacts.jsph.pl/api/v2facts/random?language=en');const d=await r.json();el.innerHTML='<span style="font-size:0.82rem;line-height:1.4">'+d.text+'</span>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      currency: { name:'Currency', icon:'💱', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Fetching rates...</span></div>';try{const r=await fetch('https://api.frankfurter.app/latest?from=GBP');const d=await r.json();const{upload USD,JPY,EUR}=d.rates;el.innerHTML='<div class="stack"><span class="wtitle">💷 GBP</span><span class="wsub">🇺🇸 $'+USD.toFixed(2)+' &nbsp; 🇪🇺 €'+EUR.toFixed(2)+' &nbsp; 🇯🇵 ¥'+JPY.toFixed(0)+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      games: { name:'F2P Game', icon:'🕹️', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Loading...</span></div>';try{const r=await fetch('https://www.freetogame.com/api/games?sort-by=release-date&order=desc&limit=1');const[g]=await r.json();el.innerHTML='<div class="stack"><span class="wtitle wacc">'+g.title+'</span><span class="wsub">'+g.genre+' · '+g.platform+'</span>'+(g.game_url?'<span class="wsub wacc3">🌐 Browser game</span>':'')+'</div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      monster: { name:'D&D Monster', icon:'👹', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Summoning beast...</span></div>';try{const id=Math.floor(Math.random()*300+1);const r=await fetch('https://www.dnd5eapi.co/api/monsters/'+id);const m=await r.json();if(m.error)throw new Error();const ac=m.armor_class?(m.armor_class[0]?.value??m.armor_class):'?';el.innerHTML='<div class="stack"><span class="wtitle wacc2">'+m.name+'</span><span class="wsub">⚔️ CR '+m.challenge_rating+' &nbsp; 🛡️ AC '+ac+' &nbsp; ❤️ HP '+m.hit_points+'</span><span class="wsub">'+m.size+' '+m.type+' · '+(m.alignment||'unaligned')+'</span></div>'}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}},
+      news: { name:'Hacker News', icon:'📡', unique:false, render:async(el)=>{el.innerHTML='<div class="stack"><span class="wloading">Loading...</span></div>';try{const r=await fetch('https://hacker-news.firebaseio.com/v0/topstories.json');const ids=await r.json();const top=ids.slice(0,5);const stories=await Promise.all(top.map(id=>fetch('https://hacker-news.firebaseio.com/v0/item/'+id+'.json').then(x=>x.json())));el.innerHTML=stories.map(s=>'<div class="news-item"><a href="'+(s.url||'https://news.ycombinator.com/item?id='+s.id)+'" target="_blank">'+s.title+'</a></div>').join('')}catch{el.innerHTML='<div><span class="werror">Unavailable</span></div>'}}}
     };
-    pomodoro.updateDisplay();
 
-    // ---- Notes (localStorage) ----
-    const notesArea = document.getElementById('notesArea');
-    notesArea.value = localStorage.getItem('miku-notes') || '';
-    notesArea.addEventListener('input', () => {
-      localStorage.setItem('miku-notes', notesArea.value);
-    });
+    const DEFAULT_LAYOUT=[
+      {id:'quicklinks',x:30,y:130,w:220,pinned:false},
+      {id:'weather',x:280,y:130,w:210,pinned:false},
+      {id:'system',x:520,y:130,w:200,pinned:false},
+      {id:'pomodoro',x:30,y:370,w:200,pinned:false},
+      {id:'notes',x:260,y:370,w:260,pinned:false},
+      {id:'nowplaying',x:550,y:370,w:220,pinned:false},
+    ];
 
-    // ---- Weather (using wttr.in) ----
-    async function fetchWeather() {
-      try {
-        const res = await fetch('https://wttr.in/?format=j1');
-        const data = await res.json();
-        const current = data.current_condition[0];
-        const temp = current.temp_C + '°C';
-        const desc = current.weatherDesc[0].value;
-        const icon = getWeatherIcon(desc);
-        document.getElementById('weatherIcon').textContent = icon;
-        document.getElementById('weatherTemp').textContent = temp;
-        document.getElementById('weatherDesc').textContent = desc;
-      } catch (e) {
-        document.getElementById('weatherDesc').textContent = 'Unavailable';
-      }
+    function loadLayout(){try{return JSON.parse(localStorage.getItem('miku-widget-layout'))}catch{return null}}
+    function saveLayout(layout){localStorage.setItem('miku-widget-layout',JSON.stringify(layout))}
+
+    let editMode=false;
+    const canvas=document.getElementById('widget-canvas');
+
+    function renderWidgets(){
+      canvas.innerHTML='';
+      const layout=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));
+      layout.forEach(item=>{
+        const def=WIDGET_REGISTRY[item.id];
+        if(!def)return;
+        const card=document.createElement('div');
+        card.className='widget-card'+(editMode?' edit-mode':'')+(item.pinned?' pinned':'');
+        card.dataset.widgetId=item.id;
+        card.style.left=item.x+'px';
+        card.style.top=item.y+'px';
+        card.innerHTML='<span class="pin-indicator">📌</span>'+
+          '<div class="widget-controls">'+
+            '<span class="widget-drag-handle" title="Drag">⋮⋮</span>'+
+            '<span class="widget-pin-btn'+(item.pinned?' pinned':'')+'" title="Pin">📌</span>'+
+            '<span class="widget-remove-btn" title="Remove">×</span>'+
+          '</div>'+
+          '<div class="widget-title-bar">'+def.icon+' '+def.name+'</div>'+
+          '<div class="widget-body"></div>';
+        canvas.appendChild(card);
+        const r=def.render(card.querySelector('.widget-body'));
+        if(r&&typeof r.then==='function')r.catch(()=>{});
+        card.querySelector('.widget-remove-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const idx=lay.findIndex(l=>l.id===item.id);if(idx!==-1)lay.splice(idx,1);saveLayout(lay);card.remove()};
+        card.querySelector('.widget-pin-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===item.id);if(e){e.pinned=!e.pinned;saveLayout(lay);card.classList.toggle('pinned',e.pinned);card.querySelector('.widget-pin-btn').classList.toggle('pinned',e.pinned)}};
+        let drag=false,offX=0,offY=0;
+        card.querySelector('.widget-drag-handle').onmousedown=e=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const entry=lay.find(l=>l.id===item.id);if(entry&&entry.pinned)return;drag=true;card.classList.add('dragging');offX=e.clientX-card.offsetLeft;offY=e.clientY-card.offsetTop;e.preventDefault()};
+        document.addEventListener('mousemove',e=>{if(!drag)return;card.style.left=(e.clientX-offX)+'px';card.style.top=(e.clientY-offY)+'px'});
+        document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;card.classList.remove('dragging');const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===item.id);if(e){e.x=card.offsetLeft;e.y=card.offsetTop;saveLayout(lay)}});
+      });
     }
 
-    function getWeatherIcon(desc) {
-      const d = desc.toLowerCase();
-      if (d.includes('sun') || d.includes('clear')) return '☀️';
-      if (d.includes('cloud')) return '⛅';
-      if (d.includes('rain')) return '🌧️';
-      if (d.includes('snow')) return '❄️';
-      if (d.includes('thunder')) return '⛈️';
-      if (d.includes('fog') || d.includes('mist')) return '🌫️';
-      return '🌤️';
-    }
-    fetchWeather();
-
-    // ---- System Stats (Browser-based approximation) ----
-    if (navigator.hardwareConcurrency) {
-      document.getElementById('cpuStat').textContent = '~' + Math.round(Math.random() * 30 + 10) + '%';
-      document.getElementById('cpuBar').style.width = (Math.random() * 40 + 10) + '%';
-    }
-    
-    if (navigator.deviceMemory) {
-      const memPercent = Math.round(Math.random() * 40 + 20);
-      document.getElementById('memStat').textContent = memPercent + '%';
-      document.getElementById('memBar').style.width = memPercent + '%';
+    document.getElementById('editModeBtn').onclick=()=>{editMode=!editMode;document.getElementById('editModeBtn').classList.toggle('active',editMode);document.getElementById('editModeBtn').textContent=editMode?'✓ Done':'✎ Edit';document.querySelectorAll('.widget-card').forEach(c=>c.classList.toggle('edit-mode',editMode))};
+    document.getElementById('addWidgetBtn').onclick=openAddModal;
+    document.getElementById('closeModalBtn').onclick=()=>document.getElementById('add-widget-modal').classList.remove('open');
+    document.getElementById('add-widget-modal').onclick=e=>{if(e.target.id==='add-widget-modal')document.getElementById('add-widget-modal').classList.remove('open')};
+    function openAddModal(){
+      const modal=document.getElementById('add-widget-modal');
+      const grid=document.getElementById('modalGrid');
+      const layout=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));
+      const activeIds=new Set(layout.map(l=>l.id));
+      grid.innerHTML='';
+      Object.entries(WIDGET_REGISTRY).forEach(([id,def])=>{
+        const already=def.unique&&activeIds.has(id);
+        const opt=document.createElement('div');
+        opt.className='modal-opt'+(already?' existing':'');
+        opt.innerHTML='<div class="modal-opt-icon">'+def.icon+'</div><div class="modal-opt-name">'+def.name+'</div><div class="modal-opt-desc">'+(already?'Added':'Click to add')+'</div>';
+        if(!already)opt.onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const defaults={};DEFAULT_LAYOUT.forEach(d=>defaults[d.id]=d);const dp=defaults[id]||{x:30+(lay.length%4)*260,y:130+Math.floor(lay.length/4)*240,w:220};lay.push({id,x:dp.x,y:dp.y,w:dp.w||220,pinned:false});saveLayout(lay);modal.classList.remove('open');renderWidgets()};
+        grid.appendChild(opt);
+      });
+      modal.classList.add('open');
     }
 
-    // Update stats every 30 seconds
-    setInterval(() => {
-      if (navigator.deviceMemory) {
-        const memPercent = Math.round(Math.random() * 40 + 20);
-        document.getElementById('memStat').textContent = memPercent + '%';
-        document.getElementById('memBar').style.width = memPercent + '%';
-      }
-    }, 30000);
+    /* PARTICLES */
+    const particlesContainer=document.getElementById('particles');
+    for(let i=0;i<40;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.top=Math.random()*100+'%';p.style.animationDelay=Math.random()*5+'s';particlesContainer.appendChild(p)}
+
+    /* CLOCK */
+    function updateClock(){const now=new Date();document.getElementById('clock').textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});document.getElementById('date').textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}
+    updateClock();setInterval(updateClock,1000);
+
+    /* SEARCH */
+    document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter'){const q=e.target.value.trim();if(q){window.open('https://google.com/search?q='+encodeURIComponent(q),'_blank');e.target.value=''}}});
+
+    /* INIT */
+    renderWidgets();
   </script>
+</script>
 </body>
 </html>
