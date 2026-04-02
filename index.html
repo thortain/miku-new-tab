@@ -14,14 +14,15 @@
     }
 
     :root {
-      --miku-cyan: #00E5FF;
+      --miku-cyan: #39FFDC;  /* Miku teal */
+      --miku-lime:  #B8FF00;  /* Miku hair highlight */
       --miku-pink: #FF66CC;
       --miku-purple: #9D4EDD;
       --miku-dark: #0a0a1a;
       --miku-darker: #050510;
-      --glass-bg: rgba(15, 15, 40, 0.65);
-      --glass-border: rgba(0, 229, 255, 0.2);
-      --text-glow: 0 0 10px var(--miku-cyan), 0 0 20px rgba(0, 229, 255, 0.3);
+      --glass-bg: rgba(5, 15, 35, 0.70);
+      --glass-border: rgba(57, 255, 220, 0.25);
+      --text-glow: 0 0 10px var(--miku-cyan), 0 0 25px rgba(57, 255, 220, 0.4);
     }
 
     body {
@@ -36,22 +37,104 @@
       position: fixed;
       inset: 0;
       background: 
-        radial-gradient(ellipse at 20% 80%, rgba(157, 78, 221, 0.4) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(0, 229, 255, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(255, 102, 204, 0.15) 0%, transparent 70%),
-        linear-gradient(180deg, #050510 0%, #0a0a2a 50%, #0d0520 100%);
+        radial-gradient(ellipse at 50% 100%, rgba(0, 80, 200, 0.70) 0%, rgba(0, 120, 255, 0.35) 40%, transparent 65%),
+        radial-gradient(ellipse at 80% 20%, rgba(57, 255, 220, 0.85) 0%, rgba(0, 150, 255, 0.40) 50%, transparent 70%),
+        radial-gradient(ellipse at 30% 30%, rgba(0, 100, 255, 0.15) 0%, transparent 60%),
+        linear-gradient(180deg, #010818 0%, #020c24 50%, #041030 100%);
       z-index: 0;
     }
 
     .bg-image {
       position: fixed;
       inset: 0;
-      background: url('https://i.imgur.com/YOUR_MIKU_IMAGE.png') center/cover no-repeat;
-      opacity: 0.85;
+      background: url('miku-bg.png') center/cover no-repeat;
+      opacity: 0.75;
       z-index: 1;
-      mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+      mask-image: radial-gradient(ellipse at 50% 60%, black 35%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 60%, black 35%, transparent 75%);
     }
+
+    /* ---- Miku Decals ---- */
+    .decals { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+
+    /* Floating music notes */
+    .decal-note {
+      position: absolute; opacity: 0.18; font-size: 2rem; user-select: none;
+      animation: drift 20s ease-in-out infinite; color: var(--miku-cyan);
+    }
+    .decal-note:nth-child(odd)  { color: var(--miku-pink); animation-duration: 25s; }
+    .decal-note:nth-child(3n)   { color: var(--miku-lime); opacity: 0.12; font-size: 1.5rem; }
+    @keyframes drift {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-25px) rotate(8deg); }
+    }
+
+    /* Spinning ring top-right */
+    .decal-ring-1 {
+      position: absolute; top: 8%; right: 4%;
+      width: 140px; height: 140px;
+      border: 2px solid rgba(57,255,220,0.18); border-radius: 50%;
+      animation: spin-slow 35s linear infinite;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .decal-ring-1::before { content: '♪'; font-size: 3.5rem; color: rgba(57,255,220,0.2); }
+    .ring-inner {
+      position: absolute; width: 90px; height: 90px;
+      border: 1px solid rgba(255,102,204,0.15); border-radius: 50%;
+      animation: spin-reverse 22s linear infinite;
+    }
+    @keyframes spin-slow   { from{transform:rotate(0deg);}   to{transform:rotate(360deg);} }
+    @keyframes spin-reverse { from{transform:rotate(360deg);} to{transform:rotate(0deg);} }
+
+    /* Headphones left */
+    .decal-h-l {
+      position: absolute; top: 38%; left: 3%;
+      transform: rotate(-15deg); opacity: 0.15;
+    }
+    .hp-band { width: 90px; height: 45px; border: 3px solid var(--miku-cyan); border-bottom: none; border-radius: 50% 50% 0 0; }
+    .hp-cup { position: absolute; width: 28px; height: 36px; background: rgba(57,255,220,0.3); border: 2px solid var(--miku-cyan); border-radius: 6px; top: 38px; }
+    .hp-cup-l { left: 0; } .hp-cup-r { right: 0; }
+
+    /* Vinyl record right */
+    .decal-v-r {
+      position: absolute; top: 58%; right: 5%;
+      width: 100px; height: 100px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(57,255,220,0.25) 0%, rgba(57,255,220,0.05) 40%, rgba(255,255,255,0.08) 60%, transparent 70%);
+      border: 2px solid rgba(57,255,220,0.2);
+      animation: spin-slow 8s linear infinite; display: flex; align-items: center; justify-content: center;
+    }
+    .vinyl-label { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,102,204,0.35); border: 1px solid rgba(255,102,204,0.4); }
+    .vinyl-groove { position: absolute; width: 70px; height: 70px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.06); }
+
+    /* Sound bars left */
+    .decal-sb-l {
+      position: absolute; top: 75%; left: 5%;
+      display: flex; gap: 5px; align-items: flex-end; opacity: 0.18;
+    }
+    .sb-bar { width: 7px; border-radius: 4px; background: var(--miku-cyan);
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .sb-bar:nth-child(1){height:22px;animation-delay:0s;}
+    .sb-bar:nth-child(2){height:38px;animation-delay:0.15s;}
+    .sb-bar:nth-child(3){height:28px;animation-delay:0.3s;}
+    .sb-bar:nth-child(4){height:45px;animation-delay:0.45s;}
+    .sb-bar:nth-child(5){height:18px;animation-delay:0.6s;}
+
+    /* Equalizer bars right */
+    .decal-eq-r {
+      position: absolute; top: 72%; right: 8%;
+      display: flex; gap: 4px; align-items: flex-end; opacity: 0.18; flex-direction: row-reverse;
+    }
+    .eq-bar { width: 6px; border-radius: 3px; background: var(--miku-pink);
+      animation: bounce 0.9s ease-in-out infinite;
+    }
+    .eq-bar:nth-child(1){height:30px;animation-delay:0s;}
+    .eq-bar:nth-child(2){height:50px;animation-delay:0.1s;}
+    .eq-bar:nth-child(3){height:20px;animation-delay:0.2s;}
+    .eq-bar:nth-child(4){height:42px;animation-delay:0.3s;}
+    .eq-bar:nth-child(5){height:16px;animation-delay:0.5s;}
+    @keyframes bounce { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
+
 
     .particles {
       position: fixed;
@@ -86,6 +169,56 @@
       25% { transform: translateY(-30px) translateX(10px) rotate(90deg); opacity: 0.8; }
       50% { transform: translateY(-15px) translateX(-15px) rotate(180deg); opacity: 0.4; }
       75% { transform: translateY(-40px) translateX(5px) rotate(270deg); opacity: 0.7; }
+    }
+
+
+    /* ---- Liquid Glass Panel ---- */
+    .liquid-glass {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: rgba(5, 10, 25, 0.45);
+      backdrop-filter: blur(7px) saturate(160%);
+      -webkit-backdrop-filter: blur(7px) saturate(160%);
+      border: 1px solid rgba(57, 255, 220, 0.18);
+      border-radius: 0;
+      box-shadow:
+        inset 0 0 80px rgba(0, 0, 0, 0.5),
+        inset 6px 0 30px rgba(57, 255, 220, 0.06),
+        inset -6px 0 30px rgba(57, 255, 220, 0.06),
+        0 0 0 4px rgba(5, 10, 25, 0.25);
+    }
+
+    /* Subtle glass sheen — diagonal highlight */
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        125deg,
+        rgba(255,255,255,0.06) 0%,
+        rgba(255,255,255,0.02) 30%,
+        transparent 60%,
+        rgba(57,255,220,0.03) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Bottom edge shimmer */
+    .liquid-glass::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(57,255,220,0.25),
+        rgba(57,255,220,0.08),
+        transparent
+      );
+      pointer-events: none;
     }
 
     .music-bars {
@@ -156,7 +289,7 @@
 
     @keyframes pulse-glow {
       0%, 100% { text-shadow: var(--text-glow); }
-      50% { text-shadow: 0 0 15px var(--miku-cyan), 0 0 30px var(--miku-cyan), 0 0 45px rgba(0, 229, 255, 0.3); }
+      50% { text-shadow: 0 0 20px var(--miku-cyan), 0 0 40px var(--miku-cyan), 0 0 60px rgba(57, 255, 220, 0.5); }
     }
 
     /* ---- Search Bar ---- */
@@ -476,9 +609,33 @@
 <body>
   <div class="bg-layer"></div>
   <div class="bg-image"></div>
+
+  <!-- Miku Decals -->
+  <div class="decals">
+    <div class="decal-ring decal-ring-1"><div class="ring-inner"></div></div>
+    <div class="decal decal-note" style="top:8%;left:6%">♪</div>
+    <div class="decal decal-note" style="top:15%;right:10%;animation-delay:-3s">♫</div>
+    <div class="decal decal-note" style="top:35%;left:4%">♬</div>
+    <div class="decal decal-note" style="top:55%;right:6%;animation-delay:-9s">♩</div>
+    <div class="decal decal-note" style="top:70%;left:8%;animation-delay:-12s">♪</div>
+    <div class="decal decal-note" style="top:25%;right:14%;animation-delay:-2s;color:var(--miku-pink)">♫</div>
+    <div class="decal decal-note" style="top:80%;right:18%;animation-delay:-7s">♬</div>
+    <div class="decal decal-note" style="top:45%;left:10%;animation-delay:-15s">♩</div>
+    <div class="decal decal-note" style="top:12%;left:45%;animation-delay:-4s">✦</div>
+    <div class="decal decal-note" style="top:65%;left:55%;animation-delay:-11s;color:var(--miku-lime)">✧</div>
+    <div class="decal decal-note" style="top:88%;left:30%;animation-delay:-8s">♪</div>
+    <div class="decal decal-note" style="top:5%;right:35%;animation-delay:-5s;color:var(--miku-pink)">♬</div>
+    <div class="decal-headphones decal-h-l"><div class="hp-band"></div><div class="hp-cup hp-cup-l"></div><div class="hp-cup hp-cup-r"></div></div>
+    <div class="decal-vinyl decal-v-r"><div class="vinyl-label"></div><div class="vinyl-groove"></div></div>
+    <div class="decal-soundbars decal-sb-l"><div class="sb-bar"></div><div class="sb-bar"></div><div class="sb-bar"></div><div class="sb-bar"></div><div class="sb-bar"></div></div>
+    <div class="decal-eq decal-eq-r"><div class="eq-bar eq-1"></div><div class="eq-bar eq-2"></div><div class="eq-bar eq-3"></div><div class="eq-bar eq-4"></div><div class="eq-bar eq-5"></div></div>
+  </div>
   
   <div class="particles" id="particles"></div>
 
+
+  <!-- Liquid Glass Panel -->
+  <div class="liquid-glass"></div>
   <div class="container">
     <!-- Clock -->
     <div class="clock-widget">
