@@ -359,7 +359,6 @@
       backdrop-filter: blur(16px) saturate(180%);
       -webkit-backdrop-filter: blur(16px) saturate(180%);
       box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(255,45,149,0.12), inset 0 1px 0 rgba(255,255,255,0.15);
-      overflow: hidden;
     }
     /* Scanline overlay */
     .widget-card::after {
@@ -410,7 +409,7 @@
     }
     .widget-close-btn:hover { background: #ff2d95; color: white; }
     .widget-body {
-      padding: 12px 14px;
+      overflow: hidden; padding: 12px 14px;
       pointer-events: auto;
       min-height: 80px;
     }
@@ -457,7 +456,7 @@
     .ie-btn:hover { background: rgba(57,255,220,0.2); border-color: var(--miku-cyan); }
 
     /* ---- Add Widget Modal ---- */
-    #add-widget-modal { display: none; position: fixed; inset: 0; background: rgba(5,10,25,0.75); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
+    #add-widget-modal { display: none; position: fixed; inset: 0; background: rgba(5,10,25,0.85); z-index: 2000; align-items: center; justify-content: center; }
     #add-widget-modal.open { display: flex; }
     .modal-box { background: rgba(5,12,30,0.95); border: 1px solid rgba(57,255,220,0.2); border-radius: 20px; padding: 24px; max-width: 480px; width: 90%; max-height: 80vh; overflow-y: auto; }
     .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
@@ -648,7 +647,7 @@
     </div>
 
 <style>
-    #settings-modal { display: none; position: fixed; inset: 0; background: rgba(5,10,25,0.75); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
+    #settings-modal { display: none; position: fixed; inset: 0; background: rgba(5,10,25,0.85); z-index: 2000; align-items: center; justify-content: center; }
     #settings-modal.open { display: flex; }
     .settings-section { margin-bottom: 20px; }
     .settings-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--miku-cyan); margin-bottom: 10px; }
