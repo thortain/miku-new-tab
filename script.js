@@ -172,7 +172,7 @@
     document.getElementById('applyBgUrl').onclick=()=>{const url=document.getElementById('bgUrlInput').value.trim();if(url)setBackground(url)};
     document.getElementById('bgUrlInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('applyBgUrl').click()};
     document.getElementById('uploadBgBtn').onclick=()=>document.getElementById('bgFileInput').click();
-    document.getElementById('bgFileInput').onchange=function(){const file=this.files[0];if(!file)return;if(file.size > 5*1024*1024){alert('Image too large (max 5MB)');return}const reader=new FileReader();reader.onload=function(e){setBackground(e.target.result)};reader.readAsDataURL(file)};
+    document.getElementById('bgFileInput').onchange=function(){const file=this.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){setBackground(e.target.result)};reader.readAsDataURL(file)};
     document.getElementById('bgOpacitySlider').oninput=function(){const v=this.value/100;document.getElementById('opacityValue').textContent=this.value+'%';const bg=document.querySelector('.bg-image');if(bg)bg.style.opacity=v;localStorage.setItem('miku-bg-opacity',v)};
     document.getElementById('bgBlurSlider').oninput=function(){const v=parseInt(this.value,10);document.getElementById('blurValue').textContent=v>0?v+'px':'None';const bg=document.querySelector('.bg-image');if(bg)bg.style.filter=v>0?'blur('+v+'px)':'none';localStorage.setItem('miku-bg-blur',v)};
 
