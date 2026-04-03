@@ -380,11 +380,45 @@
     .widget-body { pointer-events: auto; }
 
     /* ---- Top Bar ---- */
-    .top-bar { display: flex; gap: 10px; margin-bottom: 12px; opacity: 0.75; transition: opacity 0.2s; }
-    .top-bar:hover { opacity: 1; }
-    .top-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid rgba(57,255,220,0.3); background: rgba(5,15,35,0.6); color: var(--miku-cyan); font-family: 'Quicksand',sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; backdrop-filter: blur(8px); transition: all 0.2s; letter-spacing: 0.5px; }
-    .top-btn:hover { background: rgba(57,255,220,0.15); border-color: var(--miku-cyan); box-shadow: 0 0 14px rgba(57,255,220,0.25); }
-    .top-btn.active { background: rgba(255,102,204,0.2); color: var(--miku-pink); border-color: rgba(255,102,204,0.5); }
+    .corner-menu { position: fixed; top: 16px; right: 20px; z-index: 9999; display: flex; gap: 8px; align-items: center; }
+    .corner-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(57,255,220,0.3); background: rgba(5,15,35,0.7); color: var(--miku-cyan); font-size: 1.1rem; cursor: pointer; backdrop-filter: blur(8px); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .corner-btn:hover { background: rgba(57,255,220,0.2); border-color: var(--miku-cyan); box-shadow: 0 0 12px rgba(57,255,220,0.3); }
+    .corner-dropdown { display: none; position: absolute; top: 44px; right: 0; background: rgba(5,12,30,0.97); border: 1px solid rgba(57,255,220,0.25); border-radius: 12px; padding: 6px; min-width: 200px; backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .corner-dropdown.open { display: block; }
+    .corner-dropdown-item { padding: 10px 14px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.8); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+    .corner-dropdown-item:hover { background: rgba(57,255,220,0.1); color: white; }
+    .corner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+    .corner-dot.active { background: var(--miku-cyan); box-shadow: 0 0 6px var(--miku-cyan); }
+    .corner-dropdown-divider { height: 1px; background: rgba(57,255,220,0.12); margin: 4px 0; }
+    /* API widget */
+    .api-widget { text-align: center; }
+    .api-row { display: flex; gap: 4px; margin-bottom: 8px; }
+    .api-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(57,255,220,0.15); border-radius: 6px; color: white; padding: 4px 8px; font-size: 0.72rem; font-family: inherit; outline: none; }
+    .api-input:focus { border-color: var(--miku-cyan); }
+    .api-input::placeholder { color: rgba(255,255,255,0.3); }
+    .api-btn { background: rgba(57,255,220,0.15); border: 1px solid rgba(57,255,220,0.3); border-radius: 6px; color: var(--miku-cyan); padding: 4px 10px; font-size: 0.72rem; cursor: pointer; font-family: inherit; }
+    .api-output { font-size: 0.72rem; color: rgba(255,255,255,0.5); text-align: left; max-height: 160px; overflow-y: auto; }
+    .api-pre { white-space: pre-wrap; word-break: break-all; margin: 0; color: var(--miku-lime); }
+    /* RSS widget */
+    .rss-widget { text-align: center; }
+    .rss-row { display: flex; gap: 4px; margin-bottom: 8px; }
+    .rss-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(57,255,220,0.15); border-radius: 6px; color: white; padding: 4px 8px; font-size: 0.72rem; font-family: inherit; outline: none; }
+    .rss-input:focus { border-color: var(--miku-cyan); }
+    .rss-input::placeholder { color: rgba(255,255,255,0.3); }
+    .rss-btn { background: rgba(57,255,220,0.15); border: 1px solid rgba(57,255,220,0.3); border-radius: 6px; color: var(--miku-cyan); padding: 4px 10px; font-size: 0.72rem; cursor: pointer; font-family: inherit; }
+    .rss-output { text-align: left; max-height: 180px; overflow-y: auto; }
+    .rss-item { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(57,255,220,0.08); }
+    .rss-item:last-child { border-bottom: none; }
+    .rss-title { color: var(--miku-cyan); text-decoration: none; font-size: 0.75rem; line-height: 1.3; display: block; }
+    .rss-title:hover { text-decoration: underline; }
+    .rss-date { color: rgba(255,255,255,0.35); font-size: 0.65rem; margin-top: 2px; }
+    /* Import/Export widget */
+    .ie-widget { display: flex; flex-direction: column; gap: 8px; }
+    .ie-textarea { width: 100%; min-height: 100px; background: rgba(255,255,255,0.04); border: 1px solid rgba(57,255,220,0.12); border-radius: 8px; color: var(--miku-lime); padding: 8px; font-family: monospace; font-size: 0.65rem; resize: none; outline: none; box-sizing: border-box; }
+    .ie-textarea:focus { border-color: rgba(57,255,220,0.4); }
+    .ie-buttons { display: flex; gap: 6px; }
+    .ie-btn { flex: 1; padding: 5px; border-radius: 8px; border: 1px solid rgba(57,255,220,0.25); background: rgba(57,255,220,0.08); color: var(--miku-cyan); font-size: 0.75rem; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .ie-btn:hover { background: rgba(57,255,220,0.2); border-color: var(--miku-cyan); }
 
     /* ---- Add Widget Modal ---- */
     #add-widget-modal { display: none; position: fixed; inset: 0; background: rgba(5,10,25,0.75); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
@@ -562,10 +596,17 @@
       </div>
     </div>
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-      <button class="top-btn" id="addWidgetBtn">+ Add Widget</button>
-      <button class="top-btn" id="editModeBtn">✎ Edit</button>
+    <!-- Corner Menu -->
+    <div class="corner-menu" id="cornerMenu">
+      <button class="corner-btn" id="cornerAdd" title="Add Widget">+</button>
+      <button class="corner-btn" id="cornerHamburger" title="Menu">☰</button>
+      <div class="corner-dropdown" id="cornerDropdown">
+        <div class="corner-dropdown-item" id="menuEditWidgets">
+          <span class="corner-dot" id="editDot"></span> Edit widgets
+        </div>
+        <div class="corner-dropdown-divider"></div>
+        <div class="corner-dropdown-item" id="menuImportExport">💾 Import / Export layout</div>
+      </div>
     </div>
 
     <!-- Widget Canvas -->
