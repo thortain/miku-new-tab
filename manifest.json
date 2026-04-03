@@ -14,12 +14,10 @@
   "permissions": [],
   "host_permissions": [
     "https://wttr.in/*",
-    "https://api.coingecko.com/*",
+    "https://api.frankfurter.app/*",
     "https://www.dnd5eapi.co/*",
     "https://official-joke-api.appspot.com/*",
     "https://uselessfacts.jsph.pl/*",
-    "https://api.frankfurter.app/*",
-    "https://www.freetogame.com/*",
-    "https://hacker-news.firebaseio.com/*"
+    "https://www.freetogame.com/*"
   ]
 }
