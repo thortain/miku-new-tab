@@ -188,8 +188,8 @@
         }
       };
     });
-    document.getElementById('closeModalBtn').onclick=()=>document.getElementById('add-widget-modal').classList.remove('open');
-    document.getElementById('add-widget-modal').onclick=e=>{if(e.target.id==='add-widget-modal')document.getElementById('add-widget-modal').classList.remove('open')};
+    document.getElementById('closeModalBtn').onclick=()=>{document.getElementById('add-widget-modal').classList.remove('open');addModalOpen=false};
+    document.getElementById('add-widget-modal').onclick=e=>{if(e.target.id==='add-widget-modal'){document.getElementById('add-widget-modal').classList.remove('open');addModalOpen=false}};
     function openAddModal(){
       const modal=document.getElementById('add-widget-modal');
       const grid=document.getElementById('modalGrid');
@@ -201,7 +201,7 @@
         const opt=document.createElement('div');
         opt.className='modal-opt'+(already?' existing':'');
         opt.innerHTML='<div class="modal-opt-icon">'+def.icon+'</div><div class="modal-opt-name">'+def.name+'</div><div class="modal-opt-desc">'+(already?'Added':'Click to add')+'</div>';
-        if(!already)opt.onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const defaults={};DEFAULT_LAYOUT.forEach(d=>defaults[d.id]=d);const dp=defaults[id]||{x:30+(lay.length%4)*260,y:130+Math.floor(lay.length/4)*240,w:220,h:null};lay.push({id,x:dp.x,y:dp.y,w:dp.w||220,h:dp.h||null,pinned:false});saveLayout(lay);modal.classList.remove('open');renderWidgets()};
+        if(!already)opt.onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const defaults={};DEFAULT_LAYOUT.forEach(d=>defaults[d.id]=d);const dp=defaults[id]||{x:30+(lay.length%4)*260,y:130+Math.floor(lay.length/4)*240,w:220,h:null};lay.push({id,x:dp.x,y:dp.y,w:dp.w||220,h:dp.h||null,pinned:false});saveLayout(lay);modal.classList.remove('open');addModalOpen=false;renderWidgets()};
         grid.appendChild(opt);
       });
       modal.classList.add('open');
