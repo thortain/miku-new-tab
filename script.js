@@ -117,6 +117,72 @@
     document.getElementById('menuEditWidgets').onclick=()=>{editMode=!editMode;editDot.classList.toggle('active',editMode);document.querySelectorAll('.widget-card').forEach(c=>c.classList.toggle('edit-mode',editMode));cornerDropdown.classList.remove('open')};
     document.getElementById('menuImportExport').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const idx=lay.findIndex(l=>l.id==='importexport');if(idx!==-1){lay.splice(idx,1)};const defaults={};DEFAULT_LAYOUT.forEach(d=>defaults[d.id]=d);lay.push({id:'importexport',x:30,y:30,w:280,pinned:false});saveLayout(lay);renderWidgets();cornerDropdown.classList.remove('open')};
     document.getElementById('cornerAdd').onclick=()=>{openAddModal();cornerDropdown.classList.remove('open')};
+
+    // ---- Settings ----
+    function setBackground(url) {
+      const bg = document.querySelector('.bg-image');
+      if (!bg) return;
+      if (!url || url === 'default') {
+        bg.style.background = "var(--miku-darker) url('miku-bg.png') center/cover no-repeat";
+        bg.style.opacity = '0.75';
+      } else {
+        bg.style.background = "url('" + url + "') center/cover no-repeat";
+      }
+      localStorage.setItem('miku-bg', url || 'default');
+      document.querySelectorAll('.bg-preset').forEach(p => p.classList.remove('active'));
+      const preset = document.querySelector('.bg-preset[data-bg="' + (url || 'default') + '"]');
+      if (preset) preset.classList.add('active');
+    }
+
+    function loadSettings() {
+      const savedBg = localStorage.getItem('miku-bg') || 'default';
+      const savedOpacity = parseFloat(localStorage.getItem('miku-bg-opacity') || '0.75');
+      const savedBlur = parseInt(localStorage.getItem('miku-bg-blur') || '0', 10);
+      const bg = document.querySelector('.bg-image');
+      if (bg) {
+        bg.style.opacity = savedOpacity;
+        bg.style.filter = savedBlur > 0 ? 'blur(' + savedBlur + 'px)' : 'none';
+        if (savedBg !== 'default') {
+          bg.style.background = "url('" + savedBg + "') center/cover no-repeat";
+        }
+      }
+      const opacitySlider = document.getElementById('bgOpacitySlider');
+      if (opacitySlider) {
+        opacitySlider.value = Math.round(savedOpacity * 100);
+        document.getElementById('opacityValue').textContent = Math.round(savedOpacity * 100) + '%';
+      }
+      const blurSlider = document.getElementById('bgBlurSlider');
+      if (blurSlider) {
+        blurSlider.value = savedBlur;
+        document.getElementById('blurValue').textContent = savedBlur > 0 ? savedBlur + 'px' : 'None';
+      }
+      document.querySelectorAll('.bg-preset').forEach(p => p.classList.remove('active'));
+      const active = document.querySelector('.bg-preset[data-bg="' + savedBg + '"]');
+      if (active) active.classList.add('active');
+    }
+
+    document.getElementById('menuSettings').onclick=()=>{cornerDropdown.classList.remove('open');document.getElementById('settings-modal').classList.add('open');};
+    document.getElementById('closeSettingsBtn').onclick=()=>document.getElementById('settings-modal').classList.remove('open');
+    document.getElementById('settings-modal').onclick=e=>{if(e.target.id==='settings-modal')document.getElementById('settings-modal').classList.remove('open')};
+    document.getElementById('applyBgUrl').onclick=()=>{const url=document.getElementById('bgUrlInput').value.trim();if(url)setBackground(url)};
+    document.getElementById('bgUrlInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('applyBgUrl').click()};
+    document.getElementById('uploadBgBtn').onclick=()=>document.getElementById('bgFileInput').click();
+    document.getElementById('bgFileInput').onchange=function(){const file=this.files[0];if(!file)return;if(file.size > 5*1024*1024){alert('Image too large (max 5MB)');return}const reader=new FileReader();reader.onload=function(e){setBackground(e.target.result)};reader.readAsDataURL(file)};
+    document.getElementById('bgOpacitySlider').oninput=function(){const v=this.value/100;document.getElementById('opacityValue').textContent=this.value+'%';const bg=document.querySelector('.bg-image');if(bg)bg.style.opacity=v;localStorage.setItem('miku-bg-opacity',v)};
+    document.getElementById('bgBlurSlider').oninput=function(){const v=parseInt(this.value,10);document.getElementById('blurValue').textContent=v>0?v+'px':'None';const bg=document.querySelector('.bg-image');if(bg)bg.style.filter=v>0?'blur('+v+'px)':'none';localStorage.setItem('miku-bg-blur',v)};
+
+    loadSettings();
+
+    document.querySelectorAll('.bg-preset').forEach(p => {
+      p.onclick = () => {
+        const bg = p.dataset.bg;
+        if (bg === 'default') {
+          setBackground('default');
+        } else {
+          setBackground(p.dataset.bg);
+        }
+      };
+    });
     document.getElementById('closeModalBtn').onclick=()=>document.getElementById('add-widget-modal').classList.remove('open');
     document.getElementById('add-widget-modal').onclick=e=>{if(e.target.id==='add-widget-modal')document.getElementById('add-widget-modal').classList.remove('open')};
     function openAddModal(){
