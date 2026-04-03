@@ -346,39 +346,72 @@
       overflow: visible;
     }
 
+    /* ---- Error Window Style Widgets ---- */
     .widget-card {
       position: absolute;
-      background: rgba(5, 15, 35, 0.72);
-      border: 1px solid rgba(57, 255, 220, 0.22);
-      border-radius: 16px;
-      padding: 16px;
-      min-width: 200px;
-      min-height: 120px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: box-shadow 0.2s, border-color 0.2s;
+      background: #0d0d0d;
+      border: 1px solid rgba(255,255,255,0.75);
+      border-radius: 0;
+      padding: 0;
+      min-width: 220px;
       z-index: 10;
       user-select: none;
+      box-shadow: 0 0 18px rgba(255,45,149,0.25), 0 0 40px rgba(255,45,149,0.1);
+      overflow: hidden;
     }
-    .widget-card:hover { box-shadow: 0 0 25px rgba(57, 255, 220, 0.18); }
-    .widget-card.edit-mode { border: 1px dashed rgba(57, 255, 220, 0.55); }
-    .widget-card.dragging { cursor: grabbing; box-shadow: 0 12px 50px rgba(0,0,0,0.6),0 0 30px rgba(57,255,220,0.2); z-index: 99999; opacity: 0.93; border-color: rgba(57,255,220,0.7); }
-    .widget-card.pinned .widget-drag-handle { opacity: 0.2 !important; cursor: default !important; }
-    .pin-indicator { position: absolute; top: 8px; left: 10px; font-size: 0.7rem; opacity: 0; color: var(--miku-lime); transition: opacity 0.2s; pointer-events: none; }
-    .widget-card.pinned .pin-indicator { opacity: 1; }
-    .widget-controls { display: none; align-items: center; gap: 5px; position: absolute; top: 7px; right: 7px; }
-    .edit-mode .widget-controls { display: flex; }
-    .widget-drag-handle { font-size: 0.8rem; color: rgba(57,255,220,0.4); cursor: grab; user-select: none; line-height: 1; transition: color 0.2s; }
-    .widget-drag-handle:hover { color: var(--miku-cyan); }
-    .widget-pin-btn { font-size: 0.85rem; cursor: pointer; opacity: 0; transition: opacity 0.2s, transform 0.2s; line-height: 1; }
-    .widget-pin-btn:hover { transform: scale(1.2); }
-    .widget-pin-btn.pinned { opacity: 1; }
-    .widget-remove-btn { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,77,109,0.12); border: 1px solid rgba(255,77,109,0.3); color: rgba(255,100,100,0.7); font-size: 0.9rem; line-height: 1; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; padding: 0; }
-    .widget-remove-btn:hover { background: #ff4d6d; color: white; border-color: #ff4d6d; }
-    .widget-title-bar { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; color: var(--miku-pink); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; cursor: grab; user-select: none; }
-    .widget-card.pinned .widget-title-bar { cursor: default; opacity: 0.6; }
-    .widget-title-bar::before { content: '♪'; color: var(--miku-cyan); }
-    .widget-body { pointer-events: auto; }
+    /* Scanline overlay */
+    .widget-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+      pointer-events: none;
+      z-index: 100;
+    }
+    .widget-card:hover { box-shadow: 0 0 25px rgba(255,45,149,0.4), 0 0 50px rgba(255,45,149,0.15); }
+    .widget-card.edit-mode { border-color: rgba(255,255,255,0.9); }
+    .widget-card.dragging { cursor: grabbing; box-shadow: 0 0 40px rgba(255,45,149,0.5), 0 0 80px rgba(255,45,149,0.2); z-index: 99999; }
+    /* Title bar — white chrome like error windows */
+    .widget-title-bar {
+      background: rgba(255,255,255,0.95);
+      color: #1a1a1a;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: grab;
+      user-select: none;
+      gap: 8px;
+    }
+    .widget-title-bar::before { content: ''; }
+    .widget-title-bar .wi { margin-right: 4px; }
+    .widget-title-bar .wn { flex: 1; }
+    /* Close button — magenta X in dark square */
+    .widget-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: #1a1a1a;
+      color: #ff2d95;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+    .widget-close-btn:hover { background: #ff2d95; color: white; }
+    .widget-body {
+      padding: 12px 14px;
+      pointer-events: auto;
+      min-height: 80px;
+    }
 
     /* ---- Top Bar ---- */
     .corner-menu { position: fixed; top: 16px; right: 20px; z-index: 9999; display: flex; gap: 8px; align-items: center; }

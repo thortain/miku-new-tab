@@ -106,19 +106,11 @@
         card.dataset.widgetId=item.id;
         card.style.left=item.x+'px';
         card.style.top=item.y+'px';
-        card.innerHTML='<span class="pin-indicator">📌</span>'+
-          '<div class="widget-controls">'+
-            '<span class="widget-drag-handle" title="Drag">⋮⋮</span>'+
-            '<span class="widget-pin-btn'+(item.pinned?' pinned':'')+'" title="Pin">📌</span>'+
-            '<span class="widget-remove-btn" title="Remove">×</span>'+
-          '</div>'+
-          '<div class="widget-title-bar widget-drag-handle">'+def.icon+' '+def.name+'</div>'+
-          '<div class="widget-body"></div>';
+        card.innerHTML='<div class="widget-title-bar widget-drag-handle"><span class="wi">'+def.icon+'</span><span class="wn">'+def.name+'</span><span class="widget-close-btn" data-id="'+item.id+'">✕</span></div><div class="widget-body"></div>';
         canvas.appendChild(card);
         const r=def.render(card.querySelector('.widget-body'));
         if(r&&typeof r.then==='function')r.catch(()=>{});
-        card.querySelector('.widget-remove-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const idx=lay.findIndex(l=>l.id===item.id);if(idx!==-1)lay.splice(idx,1);saveLayout(lay);card.remove()};
-        card.querySelector('.widget-pin-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===item.id);if(e){e.pinned=!e.pinned;saveLayout(lay);card.classList.toggle('pinned',e.pinned);card.querySelector('.widget-pin-btn').classList.toggle('pinned',e.pinned)}};
+        card.querySelector('.widget-close-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const idx=lay.findIndex(l=>l.id===item.id);if(idx!==-1)lay.splice(idx,1);saveLayout(lay);card.remove()};
         card.querySelector('.widget-drag-handle').onmousedown=e=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const entry=lay.find(l=>l.id===item.id);if(entry&&entry.pinned)return;drag=true;dragCard=card;card.classList.add('dragging');offX=e.clientX-card.offsetLeft;offY=e.clientY-card.offsetTop;e.preventDefault()};
       });
     }
