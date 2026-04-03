@@ -647,6 +647,29 @@
       </div>
     </div>
 
+<style>
+    #settings-modal { display: none; position: fixed; inset: 0; background: rgba(5,10,25,0.75); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
+    #settings-modal.open { display: flex; }
+    .settings-section { margin-bottom: 20px; }
+    .settings-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--miku-cyan); margin-bottom: 10px; }
+    .bg-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .bg-preset { width: 64px; height: 48px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; position: relative; transition: border-color 0.2s; }
+    .bg-preset span { font-size: 0.55rem; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.5); padding: 2px 4px; position: absolute; bottom: 0; width: 100%; text-align: center; }
+    .bg-preset:hover { border-color: var(--miku-cyan); }
+    .bg-preset.active { border-color: var(--miku-pink); }
+    .bg-upload-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .bg-url-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(57,255,220,0.15); border-radius: 8px; color: white; padding: 7px 12px; font-size: 0.78rem; font-family: inherit; outline: none; }
+    .bg-url-input:focus { border-color: var(--miku-cyan); }
+    .bg-url-input::placeholder { color: rgba(255,255,255,0.3); }
+    .settings-btn { background: rgba(57,255,220,0.15); border: 1px solid rgba(57,255,220,0.3); border-radius: 8px; color: var(--miku-cyan); padding: 7px 14px; font-size: 0.78rem; cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.15s; }
+    .settings-btn:hover { background: rgba(57,255,220,0.3); }
+    .settings-btn.secondary { background: rgba(255,102,204,0.1); border-color: rgba(255,102,204,0.3); color: var(--miku-pink); }
+    .settings-btn.secondary:hover { background: rgba(255,102,204,0.25); }
+    .settings-hint { font-size: 0.68rem; color: rgba(255,255,255,0.35); margin-top: 4px; }
+    .bg-opacity-slider, .bg-blur-slider { width: 100%; accent-color: var(--miku-cyan); margin: 6px 0; }
+    .opacity-value, .blur-value { font-size: 0.72rem; color: rgba(255,255,255,0.5); text-align: right; }
+    .blur-value { text-align: right; }
+</style>
     <!-- Settings Modal -->
     <div id="settings-modal">
       <div class="modal-box">
