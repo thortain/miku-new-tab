@@ -103,7 +103,6 @@
         if(r&&typeof r.then==='function')r.catch(()=>{});
         card.querySelector('.widget-remove-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const idx=lay.findIndex(l=>l.id===item.id);if(idx!==-1)lay.splice(idx,1);saveLayout(lay);card.remove()};
         card.querySelector('.widget-pin-btn').onclick=()=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const e=lay.find(l=>l.id===item.id);if(e){e.pinned=!e.pinned;saveLayout(lay);card.classList.toggle('pinned',e.pinned);card.querySelector('.widget-pin-btn').classList.toggle('pinned',e.pinned)}};
-        let drag=false,offX=0,offY=0;
         card.querySelector('.widget-drag-handle').onmousedown=e=>{const lay=loadLayout()||DEFAULT_LAYOUT.map(l=>({...l}));const entry=lay.find(l=>l.id===item.id);if(entry&&entry.pinned)return;drag=true;dragCard=card;card.classList.add('dragging');offX=e.clientX-card.offsetLeft;offY=e.clientY-card.offsetTop;e.preventDefault()};
       });
     }
