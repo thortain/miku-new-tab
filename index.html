@@ -374,7 +374,8 @@
     .widget-pin-btn.pinned { opacity: 1; }
     .widget-remove-btn { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,77,109,0.12); border: 1px solid rgba(255,77,109,0.3); color: rgba(255,100,100,0.7); font-size: 0.9rem; line-height: 1; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; padding: 0; }
     .widget-remove-btn:hover { background: #ff4d6d; color: white; border-color: #ff4d6d; }
-    .widget-title-bar { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; color: var(--miku-pink); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; pointer-events: none; }
+    .widget-title-bar { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; color: var(--miku-pink); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; cursor: grab; user-select: none; }
+    .widget-card.pinned .widget-title-bar { cursor: default; opacity: 0.6; }
     .widget-title-bar::before { content: '♪'; color: var(--miku-cyan); }
     .widget-body { pointer-events: auto; }
 
@@ -422,6 +423,11 @@
     .weather-icon { font-size: 2rem; margin-bottom: 4px; }
     .weather-temp { font-size: 1.8rem; font-weight: 700; color: white; }
     .weather-desc { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .weather-loc-row { display: flex; gap: 4px; margin-top: 8px; }
+    .weather-loc-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(57,255,220,0.2); border-radius: 6px; color: white; padding: 3px 8px; font-size: 0.75rem; font-family: inherit; outline: none; }
+    .weather-loc-input:focus { border-color: var(--miku-cyan); }
+    .weather-loc-input::placeholder { color: rgba(255,255,255,0.35); }
+    .weather-loc-btn { background: rgba(57,255,220,0.15); border: 1px solid rgba(57,255,220,0.3); border-radius: 6px; color: var(--miku-cyan); padding: 3px 10px; font-size: 0.75rem; cursor: pointer; font-family: inherit; }
     .system-stats { display: flex; flex-direction: column; gap: 8px; }
     .stat-row { display: flex; justify-content: space-between; align-items: center; }
     .stat-label { color: rgba(255,255,255,0.65); font-size: 0.85rem; }

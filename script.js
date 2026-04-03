@@ -18,8 +18,21 @@
       weather: {
         name: 'Weather', icon: '🌤️', unique: true,
         render: async (el) => {
-          el.innerHTML='<div class="weather-widget"><div class="weather-icon" id="wIcon">🌤️</div><div class="weather-temp" id="wTemp">--°</div><div class="weather-desc" id="wDesc">Loading...</div></div>';
-          try{const r=await fetch('https://wttr.in/?format=j1');const d=await r.json();const c=d.current_condition[0];const icons={'sun':'☀️','clear':'☀️','cloud':'⛅','rain':'🌧️','snow':'❄️','thunder':'⛈️','fog':'🌫️','mist':'🌫️'};let ico='🌤️';const wd=c.weatherDesc[0].value.toLowerCase();for(const k of Object.keys(icons))if(wd.includes(k)){ico=icons[k];break}el.querySelector('#wIcon').textContent=ico;el.querySelector('#wTemp').textContent=c.temp_C+'°C';el.querySelector('#wDesc').textContent=c.weatherDesc[0].value}catch{el.querySelector('#wDesc').textContent='Unavailable'}
+          el.innerHTML='<div class="weather-widget"><div class="weather-icon weather-icon">🌤️</div><div class="weather-temp weather-temp">--°</div><div class="weather-desc weather-desc">Detecting...</div><div class="weather-loc-row"><input class="weather-loc-input" id="wLoc" placeholder="City or postcode" maxlength=40><button class="weather-loc-btn" id="wLocBtn">Go</button></div></div>';
+          const icon=el.querySelector('.weather-icon'),temp=el.querySelector('.weather-temp'),desc=el.querySelector('.weather-desc'),locInput=el.querySelector('.weather-loc-input'),locBtn=el.querySelector('.weather-loc-btn');
+          locInput.value=localStorage.getItem('miku-weather-loc')||'';
+          async function fetchWeather(loc){
+            try{
+              const url=loc?'https://wttr.in/'+encodeURIComponent(loc)+'?format=j1':'https://wttr.in/?format=j1';
+              const r=await fetch(url);if(!r.ok)throw new Error();const d=await r.json();const c=d.current_condition[0];
+              const icons={'sun':'☀️','clear':'☀️','cloud':'⛅','rain':'🌧️','snow':'❄️','thunder':'⛈️','fog':'🌫️','mist':'🌫️'};
+              let ico='🌤️',wd=(c.weatherDesc[0].value||'').toLowerCase();for(const k of Object.keys(icons))if(wd.includes(k)){ico=icons[k];break}
+              icon.textContent=ico;temp.textContent=c.temp_C+'°C';desc.textContent=c.weatherDesc[0].value;
+            }catch{icon.textContent='🌤️';temp.textContent='--°';desc.textContent='Unavailable';}
+          }
+          locBtn.onclick=()=>{const v=locInput.value.trim();localStorage.setItem('miku-weather-loc',v);fetchWeather(v)};
+          locInput.onkeydown=e=>{if(e.key==='Enter')locBtn.click()};
+          fetchWeather(locInput.value);
         }
       },
       system: {
@@ -40,7 +53,7 @@
           el.querySelector('#pReset').onclick=()=>{clearInterval(pom.iv);pom.run=false;pom.iv=null;pom.rem=pom.dur;el.querySelector('#pTime').textContent='25:00';el.querySelector('#pStart').textContent='Start'};
         }
       },
-      notes: { name: 'Quick Notes', icon: '📝', unique: true, render:(el)=>{el.innerHTML='<textarea class="notes-input" id="wNotes" placeholder="Jot down ideas..."></textarea>';const ta=el.querySelector('#wNotes');ta.value=localStorage.getItem('miku-notes')||'';ta.oninput=()=>localStorage.setItem('miku-notes',ta.value)}},
+      notes: { name: 'Quick Notes', icon: '📝', unique: true, render:(el)=>{el.innerHTML='<textarea class="notes-input notes-textarea" placeholder="Jot down ideas..."></textarea>';const ta=el.querySelector('.notes-textarea');ta.value=localStorage.getItem('miku-notes')||'';ta.oninput=()=>localStorage.setItem('miku-notes',ta.value)}},
       nowplaying: { name: 'Now Playing', icon: '🎵', unique: true, render:(el)=>{el.innerHTML='<div class="song-widget"><div class="song-title">World is Mine</div><div class="song-artist">Hatsune Miku</div><div class="visualizer"><div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div></div></div>'}},
       countdown: {
         name: 'Countdown', icon: '⏰', unique: true,
@@ -96,7 +109,7 @@
             '<span class="widget-pin-btn'+(item.pinned?' pinned':'')+'" title="Pin">📌</span>'+
             '<span class="widget-remove-btn" title="Remove">×</span>'+
           '</div>'+
-          '<div class="widget-title-bar">'+def.icon+' '+def.name+'</div>'+
+          '<div class="widget-title-bar widget-drag-handle">'+def.icon+' '+def.name+'</div>'+
           '<div class="widget-body"></div>';
         canvas.appendChild(card);
         const r=def.render(card.querySelector('.widget-body'));
