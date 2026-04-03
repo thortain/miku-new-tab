@@ -649,37 +649,43 @@
 
     <!-- Settings Modal -->
     <div id="settings-modal">
-      <div class="modal-box">
-        <div class="modal-header">
-          <h2>⚙️ Settings</h2>
-          <button class="modal-close" id="closeSettingsBtn">×</button>
+      <div class="settings-panel">
+        <div class="settings-header">
+          <span class="settings-title">⚙️ Settings</span>
+          <button class="settings-close" id="closeSettingsBtn">✕</button>
         </div>
-        <div class="settings-section">
-          <div class="settings-label">Background</div>
-          <div class="bg-presets" id="bgPresets">
-            <div class="bg-preset active" data-bg="default" style="background: linear-gradient(135deg,#0a0a2e,#1a0a3e)">
-              <span>Miku Default</span>
+        <div class="settings-content">
+          <div class="settings-group">
+            <div class="settings-group-title">Background</div>
+            <div class="bg-presets-grid" id="bgPresets">
+              <div class="bg-preset" data-bg="default">
+                <img src="miku-bg.png" alt="Miku" onerror="this.style.display='none'">
+                <span>Miku</span>
+              </div>
+            </div>
+            <div class="bg-url-row">
+              <input type="text" class="bg-url-input" id="bgUrlInput" placeholder="Paste image URL...">
+              <button class="settings-btn primary" id="applyBgUrl">Apply</button>
+            </div>
+            <div class="bg-upload-area" id="bgUploadArea">
+              <input type="file" id="bgFileInput" accept="image/*">
+              <span>📁 Choose file or drag image here</span>
             </div>
           </div>
-          <div class="bg-upload-row">
-            <input type="text" class="bg-url-input" id="bgUrlInput" placeholder="Paste image URL..." maxlength="500">
-            <button class="settings-btn" id="applyBgUrl">Apply</button>
+          <div class="settings-group">
+            <div class="settings-group-title">Background Opacity</div>
+            <div class="slider-row">
+              <input type="range" class="settings-slider" id="bgOpacitySlider" min="10" max="100" value="75">
+              <span class="slider-val" id="opacityValue">75%</span>
+            </div>
           </div>
-          <div class="bg-upload-row">
-            <input type="file" id="bgFileInput" accept="image/*" style="display:none">
-            <button class="settings-btn secondary" id="uploadBgBtn">Upload image...</button>
+          <div class="settings-group">
+            <div class="settings-group-title">Background Blur</div>
+            <div class="slider-row">
+              <input type="range" class="settings-slider" id="bgBlurSlider" min="0" max="80" value="0">
+              <span class="slider-val" id="blurValue">None</span>
+            </div>
           </div>
-          <div class="settings-hint">Tip: Right-click an image on the web → Copy image address</div>
-        </div>
-        <div class="settings-section">
-          <div class="settings-label">Background Opacity</div>
-          <input type="range" class="bg-opacity-slider" id="bgOpacitySlider" min="10" max="100" value="75">
-          <div class="opacity-value" id="opacityValue">75%</div>
-        </div>
-        <div class="settings-section">
-          <div class="settings-label">Blur</div>
-          <input type="range" class="bg-blur-slider" id="bgBlurSlider" min="0" max="100" value="0">
-          <div class="blur-value" id="blurValue">None</div>
         </div>
       </div>
     </div>
