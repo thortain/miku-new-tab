@@ -171,11 +171,7 @@
     document.getElementById('settings-modal').onclick=e=>{if(e.target.id==='settings-modal')document.getElementById('settings-modal').classList.remove('open')};
     document.getElementById('applyBgUrl').onclick=()=>{const url=document.getElementById('bgUrlInput').value.trim();if(url)setBackground(url)};
     document.getElementById('bgUrlInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('applyBgUrl').click()};
-    document.getElementById('bgUploadArea').onclick=()=>document.getElementById('bgFileInput').click();
-    const uploadArea = document.getElementById('bgUploadArea');
-    uploadArea.addEventListener('dragover',e=>{e.preventDefault();uploadArea.style.background='rgba(57,255,220,0.1)';uploadArea.style.borderColor='var(--miku-cyan)'});
-    uploadArea.addEventListener('dragleave',()=>{uploadArea.style.background='rgba(255,255,255,0.03)';uploadArea.style.borderColor='rgba(57,255,220,0.2)'});
-    uploadArea.addEventListener('drop',e=>{e.preventDefault();uploadArea.style.background='rgba(255,255,255,0.03)';uploadArea.style.borderColor='rgba(57,255,220,0.2)';const file=e.dataTransfer.files[0];if(!file||!file.type.startsWith('image/'))return;const reader=new FileReader();reader.onload=function(ev){setBackground(ev.target.result)};reader.readAsDataURL(file)});
+    document.getElementById('uploadBgBtn').onclick=()=>document.getElementById('bgFileInput').click();
     document.getElementById('bgFileInput').onchange=function(){const file=this.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){setBackground(e.target.result)};reader.readAsDataURL(file)};
     document.getElementById('bgOpacitySlider').oninput=function(){const v=this.value/100;document.getElementById('opacityValue').textContent=this.value+'%';const bg=document.querySelector('.bg-image');if(bg)bg.style.opacity=v;localStorage.setItem('miku-bg-opacity',v)};
     document.getElementById('bgBlurSlider').oninput=function(){const v=parseInt(this.value,10);document.getElementById('blurValue').textContent=v>0?v+'px':'None';const bg=document.querySelector('.bg-image');if(bg)bg.style.filter=v>0?'blur('+v+'px)':'none';localStorage.setItem('miku-bg-blur',v)};
